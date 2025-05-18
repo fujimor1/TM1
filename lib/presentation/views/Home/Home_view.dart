@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tm1/presentation/widgets/custom_bottom_navigation.dart';
 
 class HomeView extends StatelessWidget {
@@ -44,7 +45,7 @@ class HomeView extends StatelessWidget {
                   children: categorias.map((cat) {
                     return InkWell(
                       onTap: () {
-
+                        context.pushNamed('/TecnicosView', pathParameters: {'categoria': cat['nombre']});
                       },
                       borderRadius: BorderRadius.circular(12),
                       child: Column(

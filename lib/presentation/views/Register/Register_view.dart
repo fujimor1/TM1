@@ -73,13 +73,6 @@ class RegisterView extends StatelessWidget {
                   ),
                   SizedBox(height: 50,),
                   Image.asset('assets/images/Tools.png'),
-                  // Padding(
-                  //   padding: const EdgeInsets.all(20.0),
-                  //   child: Image.asset(
-                  //     'assets/images/Tools.png',
-                  //     fit: BoxFit.contain,
-                  //   ),
-                  // ),
                 ],
               ),
             ],

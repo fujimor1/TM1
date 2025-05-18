@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:tm1/config/router/app_router.dart';
-import 'package:tm1/config/sharedpreferences/shared_preferences.dart';
+// import 'package:tm1/config/sharedpreferences/shared_preferences.dart';
 // import 'package:tm1/presentation/screens/auth/Login_screen.dart';
 
 void main() async{
 
-  final prefs = PreferenciasUsuario();
-  await prefs.initPrefs();
+  // final prefs = PreferenciasUsuario();
+  // await prefs.initPrefs();
   
   runApp(const MyApp());
 }

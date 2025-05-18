@@ -12,11 +12,14 @@ class CustomBottomNaviationBar extends StatelessWidget {
         context.go('/Home');
         break;
       case 1:
-        context.go('/Profile');
-        break;
-      case 2:
         context.go('/Request');
         break;
+      case 2:
+        context.go('/Profile');
+        break;
+      // case 3:
+      //   context.go('');
+      //   break;
     }
   }
 
@@ -33,12 +36,12 @@ class CustomBottomNaviationBar extends StatelessWidget {
           label: 'Inicio',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.shopping_cart),
-          label: '',
+          icon: Icon(Icons.mail),
+          label: 'Notificaciones',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person),
-          label: '',
+          label: 'Perfil',
         )
       ],
 

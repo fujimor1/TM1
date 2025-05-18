@@ -6,15 +6,17 @@ class CustomTextField extends StatelessWidget {
   final bool obscureText;
   final TextInputType keyboardType;
   final Icon? suffixIcon;
+  final bool enabled;
 
   const CustomTextField({
-    Key? key,
+    super.key,
     required this.label,
     required this.hintText,
     this.obscureText = false,
     this.keyboardType = TextInputType.text,
     this.suffixIcon,
-  }) : super(key: key);
+    this.enabled = true,
+  });
 
   @override
   Widget build(BuildContext context) {
