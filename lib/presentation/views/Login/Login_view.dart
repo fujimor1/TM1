@@ -23,7 +23,7 @@ class LoginView extends StatelessWidget {
 
           Column(
             children: [
-              const SizedBox(height: 200),
+              const SizedBox(height: 200,),
               Expanded(
                 child: Container(
                   width: double.infinity,
@@ -33,13 +33,6 @@ class LoginView extends StatelessWidget {
                       topLeft: Radius.circular(25),
                       topRight: Radius.circular(25),
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 8,
-                        offset: Offset(0, -3),
-                      ),
-                    ],
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(25),
@@ -48,8 +41,6 @@ class LoginView extends StatelessWidget {
                         const SizedBox(height: 10),
                         Image.asset(
                           'assets/images/Logo.png',
-                          // height: 100,
-                          // fit: BoxFit.contain,
                         ),
                         SizedBox(height: 30),
                         const TextField(
@@ -69,7 +60,7 @@ class LoginView extends StatelessWidget {
                           obscureText: true,
                           decoration: InputDecoration(
                             labelText: 'Contraseña',
-                            filled: true,
+                            // filled: true,
                             fillColor: Colors.white,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.all(
@@ -152,7 +143,6 @@ class LoginView extends StatelessWidget {
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
-                              decoration: TextDecoration.none,
                             ),
                           ),
                         ),

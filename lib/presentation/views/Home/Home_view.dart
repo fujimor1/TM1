@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tm1/presentation/widgets/custom_bottom_navigation.dart';
+import 'package:tm1/presentation/widgets/Widgets.dart';
 
 class HomeView extends StatelessWidget {
   final List<Map<String, dynamic>> categorias = [
-    {'nombre': 'Cerrajero', 'icono': 'assets/images/Contaco.png'},
-    {'nombre': 'Electricista', 'icono': 'assets/images/Contaco.png'},
-    {'nombre': 'Electrónico', 'icono': 'assets/images/Contaco.png'},
-    {'nombre': 'Gasfitero', 'icono': 'assets/images/Contaco.png'},
-    {'nombre': 'Mecánico', 'icono': 'assets/images/Contaco.png'},
-    {'nombre': 'Técnico', 'icono': 'assets/images/Contaco.png'},
+    {'nombre': 'Cerrajero', 'icono': 'assets/images/BOB.jpeg'},
+    {'nombre': 'Electricista', 'icono': 'assets/images/BOB.jpeg'},
+    {'nombre': 'Electrónico', 'icono': 'assets/images/BOB.jpeg'},
+    {'nombre': 'Gasfitero', 'icono': 'assets/images/BOB.jpeg'},
+    {'nombre': 'Mecánico', 'icono': 'assets/images/BOB.jpeg'},
+    {'nombre': 'Técnico', 'icono': 'assets/images/BOB.jpeg'},
   ];
 
   HomeView({super.key});

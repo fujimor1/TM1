@@ -1,35 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tm1/config/theme/app_colors.dart';
-import 'package:tm1/presentation/widgets/CustomTextField.dart';
+import '../../widgets/Widgets.dart';
 
-class RegisterTecnico extends StatelessWidget {
+class RegisterTecnico extends StatefulWidget {
   const RegisterTecnico({super.key});
-
   static String name = '/RTecnico';
+
+  @override
+  State<RegisterTecnico> createState() => _RegisterTecnicoState();
+}
+
+class _RegisterTecnicoState extends State<RegisterTecnico> {
+  final List<String> categorias = [
+    'Cerrajero',
+    'Electrónico',
+    'Electricista',
+    'Técnico',
+    'Gasfitería',
+    'Mecánico',
+  ];
+
+  final List<String> seleccionadas = [];
+
+  void toggleCategoria(String categoria) {
+    setState(() {
+      if (seleccionadas.contains(categoria)) {
+        seleccionadas.remove(categoria);
+      } else {
+        if (seleccionadas.length < 3) {
+          seleccionadas.add(categoria);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Solo puedes seleccionar hasta 3 categorías'),
+            ),
+          );
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Registro de Técnico', style: TextStyle(fontFamily: 'PatuaOne')),
+        title: const Text(
+          'Registro de Técnico',
+          style: TextStyle(fontFamily: 'PatuaOne'),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            CustomTextField(
-              label: 'Nombres',
-              hintText: 'Ingresar nombres',
-            ),
-            CustomTextField(
-              label: 'Apellidos',
-              hintText: 'Ingresar apellidos',
-            ),
-            CustomTextField(
-              label: 'Usuario',
-              hintText: 'Ingresar usuario',
-            ),
+            CustomTextField(label: 'Nombres', hintText: 'Ingresar nombres'),
+            CustomTextField(label: 'Apellidos', hintText: 'Ingresar apellidos'),
+            CustomTextField(label: 'Usuario', hintText: 'Ingresar usuario'),
             CustomTextField(
               label: 'Contraseña',
               hintText: 'Ingresar contraseña',
@@ -46,65 +73,35 @@ class RegisterTecnico extends StatelessWidget {
               label: 'DNI',
               hintText: 'Ingresar documento de identidad',
             ),
-            const SizedBox(height: 24),
-
+            const SizedBox(height: 16),
             const Text(
               'Agregar los distritos de atención',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-
             Row(
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: null, // Solo UI
+                    onPressed: null,
                     child: const Text('Agregar'),
                   ),
                 ),
                 const SizedBox(width: 8),
                 const CircleAvatar(
                   radius: 18,
-                  backgroundColor: Colors.teal,
+                  backgroundColor: AppColors.primary,
                   child: Icon(Icons.add, color: Colors.white),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-
-            // Container(
-            //   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            //   margin: const EdgeInsets.only(bottom: 10),
-            //   decoration: BoxDecoration(
-            //     color: Colors.teal.withOpacity(0.1),
-            //     borderRadius: BorderRadius.circular(8),
-            //     border: Border.all(color: Colors.teal),
-            //   ),
-            //   child: Row(
-            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //     children: const [
-            //       Text(
-            //         'San Juan de Miraflores',
-            //         style: TextStyle(
-            //           color: Colors.teal,
-            //           fontWeight: FontWeight.bold,
-            //         ),
-            //       ),
-            //       Icon(Icons.close, color: Colors.red),
-            //     ],
-            //   ),
-            // ),
-
             const SizedBox(height: 16),
             CustomTextField(
               label: 'Dirección',
               hintText: 'Ingresar dirección de domicilio',
             ),
             const SizedBox(height: 16),
-            CustomTextField(
-              label: 'Fecha de nacimiento',
-              hintText: 'dd/mm/aa',
-            ),
+            CustomTextField(label: 'Fecha de nacimiento', hintText: 'dd/mm/aa'),
             const SizedBox(height: 16),
             CustomTextField(
               label: 'Correo electrónico',
@@ -124,12 +121,31 @@ class RegisterTecnico extends StatelessWidget {
             Row(
               children: [
                 Image.asset('assets/images/Contaco.png'),
-                Center(
-                  child: Text('Seleccionar'),
-                ),
+                const SizedBox(width: 10),
+                const Text('Seleccionar'),
               ],
             ),
+            const SizedBox(height: 16),
+            const Text(
+              'Seleccione máximo 3 categorías',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 12),
+            GridView.count(
+              crossAxisCount: 3,
+              shrinkWrap: true,
+              mainAxisSpacing: 12,
+              crossAxisSpacing: 12,
+              childAspectRatio: 2.5,
+              children:
+                  categorias.map((categoria) {
+                    return CategoriaSelector(
+                      nombre: categoria,
+                      estaSeleccionado: seleccionadas.contains(categoria),
+                      onTap: () => toggleCategoria(categoria),
+                    );
+                  }).toList(),
+            ),
 
             const SizedBox(height: 16),
             ElevatedButton(
@@ -138,7 +154,10 @@ class RegisterTecnico extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 40,
+                  vertical: 15,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),

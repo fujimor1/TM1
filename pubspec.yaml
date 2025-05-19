@@ -35,7 +35,7 @@ dependencies:
   dio: ^5.1.1
   flutter_bloc: ^9.0.0
   flutter_riverpod: ^2.4.9
-  shared_preferences: ^2.5.3
+  # shared_preferences: ^2.5.3
   font_awesome_flutter: ^10.4.0
 
 dev_dependencies:
@@ -67,6 +67,8 @@ flutter:
     - assets/images/Contaco.png
     - assets/images/Logo.png
     - assets/images/ResetPassword.jpg
+    - assets/images/Tecnico.jpeg
+    - assets/images/BOB.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

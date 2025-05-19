@@ -13,26 +13,28 @@ class RegisterView extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
-              const SizedBox(height: 20),
-              const Text(
-                'CREAR CUENTA',
-                style: TextStyle(
-                  fontFamily: 'PatuaOne',
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
               Column(
                 children: [
-                  SizedBox(height: 40,),
+                  const Text(
+                    'CREAR CUENTA',
+                    style: TextStyle(
+                      fontFamily: 'PatuaOne',
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(height: 40),
                   ElevatedButton(
                     onPressed: () {
                       context.push('/RUser');
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
-                      padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 100,
+                        vertical: 10,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -55,7 +57,10 @@ class RegisterView extends StatelessWidget {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
-                      padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 100,
+                        vertical: 10,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -71,7 +76,7 @@ class RegisterView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(height: 50,),
+                  SizedBox(height: 50),
                   Image.asset('assets/images/Tools.png'),
                 ],
               ),

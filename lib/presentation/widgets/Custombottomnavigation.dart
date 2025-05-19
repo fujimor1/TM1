@@ -28,7 +28,7 @@ class CustomBottomNaviationBar extends StatelessWidget {
     return BottomNavigationBar(
       currentIndex: currentIndex,
       elevation: 0,
-      useLegacyColorScheme: false,
+      // useLegacyColorScheme: false,
       onTap: (value) => onItemTaped(context, value),
       items: const[
         BottomNavigationBarItem(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tm1/presentation/widgets/custom_bottom_navigation.dart';
+import 'package:tm1/presentation/widgets/Widgets.dart';
 
 class DetalleTecnicoView extends StatelessWidget {
 

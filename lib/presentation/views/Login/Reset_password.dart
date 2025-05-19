@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tm1/config/theme/app_colors.dart';
-import 'package:tm1/presentation/widgets/CustomTextField.dart';
+import 'package:tm1/presentation/widgets/Widgets.dart';
 
 class ResetPassword extends StatelessWidget {
   const ResetPassword({super.key});

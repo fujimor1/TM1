@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:tm1/presentation/widgets/SolicitudCard.dart';
-import 'package:tm1/presentation/widgets/custom_bottom_navigation.dart';
+import 'package:tm1/presentation/widgets/Widgets.dart';
 
 class RequestView extends StatefulWidget {
   const RequestView({super.key});
@@ -29,7 +28,10 @@ class _RequestViewState extends State<RequestView> {
       appBar: AppBar(
         title: const Text(
           'MIS SOLICITUDES',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.w400,
+            fontFamily: 'PatuaOne'
+          ),
         ),
         centerTitle: true,
       ),
@@ -127,11 +129,6 @@ class _RequestViewState extends State<RequestView> {
                           ),
                         ),
                         onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Solicitud finalizada'),
-                            ),
-                          );
                         },
                         child: const Text(
                           'FINALIZADO',

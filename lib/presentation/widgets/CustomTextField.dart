@@ -27,7 +27,7 @@ class CustomTextField extends StatelessWidget {
         const SizedBox(height: 6),
         TextField(
           obscureText: obscureText,
-          keyboardType: keyboardType,
+          // keyboardType: keyboardType,
           decoration: InputDecoration(
             hintText: hintText,
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),

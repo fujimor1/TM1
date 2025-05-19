@@ -1,16 +1,16 @@
 import 'package:go_router/go_router.dart';
-import 'package:tm1/presentation/screens/Register/Register_Screen.dart';
-import 'package:tm1/presentation/screens/Request/Request_screen.dart';
-import 'package:tm1/presentation/screens/profile/Profile_screen.dart';
-import 'package:tm1/presentation/screens/auth/Login_screen.dart';
-import 'package:tm1/presentation/screens/home/Home_screen.dart';
-import 'package:tm1/presentation/views/Home/DetallesTecnicoView.dart';
-import 'package:tm1/presentation/views/Home/Solicitud_view.dart';
-import 'package:tm1/presentation/views/Home/Tecnicos_view.dart';
-import 'package:tm1/presentation/views/Login/Reset_password.dart';
-import 'package:tm1/presentation/views/Login/Reset_view.dart';
-import 'package:tm1/presentation/views/Register/Register_tecnico.dart';
-import 'package:tm1/presentation/views/Register/Register_user.dart';
+import 'package:tm1/presentation/screens/Register/register_screen.dart';
+import 'package:tm1/presentation/screens/Request/request_screen.dart';
+import 'package:tm1/presentation/screens/profile/profile_screen.dart';
+import 'package:tm1/presentation/screens/auth/login_screen.dart';
+import 'package:tm1/presentation/screens/home/home_screen.dart';
+import 'package:tm1/presentation/views/Home/detalles_tecnico_view.dart';
+import 'package:tm1/presentation/views/Home/solicitud_view.dart';
+import 'package:tm1/presentation/views/Home/tecnicos_view.dart';
+import 'package:tm1/presentation/views/Login/reset_password.dart';
+import 'package:tm1/presentation/views/Login/reset_view.dart';
+import 'package:tm1/presentation/views/Register/register_tecnico.dart';
+import 'package:tm1/presentation/views/Register/register_user.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/login_screen',

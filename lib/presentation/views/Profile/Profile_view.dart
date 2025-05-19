@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tm1/presentation/widgets/CampoEditable.dart';
-import 'package:tm1/presentation/widgets/DatosPerfil.dart';
-import 'package:tm1/presentation/widgets/custom_bottom_navigation.dart';
+import 'package:tm1/config/theme/app_colors.dart';
+import 'package:tm1/presentation/widgets/Widgets.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
@@ -12,10 +11,9 @@ class ProfileView extends StatelessWidget {
       bottomNavigationBar: const CustomBottomNaviationBar(currentIndex: 2),
       appBar: AppBar(
         title: Text(
-          'Datos Socio Ayuda Pe',
+          'Datos Socio Chambea Ya',
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.teal),
         ),
-        automaticallyImplyLeading: false,
         actions: const [
           Padding(
             padding: EdgeInsets.all(12),
@@ -77,7 +75,7 @@ class ProfileView extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF5FB7B7),
+                  backgroundColor: AppColors.primary,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 36,
                     vertical: 14,
