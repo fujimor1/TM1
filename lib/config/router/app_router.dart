@@ -1,16 +1,23 @@
 import 'package:go_router/go_router.dart';
+import 'package:tm1/presentation/screens/Category/category_screen.dart';
 import 'package:tm1/presentation/screens/Register/register_screen.dart';
 import 'package:tm1/presentation/screens/Request/request_screen.dart';
+import 'package:tm1/presentation/screens/paymment/paymment_screen.dart';
 import 'package:tm1/presentation/screens/profile/profile_screen.dart';
 import 'package:tm1/presentation/screens/auth/login_screen.dart';
 import 'package:tm1/presentation/screens/home/home_screen.dart';
-import 'package:tm1/presentation/views/Home/detalles_tecnico_view.dart';
-import 'package:tm1/presentation/views/Home/solicitud_view.dart';
-import 'package:tm1/presentation/views/Home/tecnicos_view.dart';
+import 'package:tm1/presentation/views/Category/category_profile_edit.dart';
+import 'package:tm1/presentation/views/Home/home_tenico/home_view_tecnico.dart';
+import 'package:tm1/presentation/views/Home/home_user/detalles_tecnico_view.dart';
+import 'package:tm1/presentation/views/Home/home_user/solicitud_view.dart';
+import 'package:tm1/presentation/views/Home/home_user/tecnicos_view.dart';
 import 'package:tm1/presentation/views/Login/reset_password.dart';
 import 'package:tm1/presentation/views/Login/reset_view.dart';
+import 'package:tm1/presentation/views/Paymment/subscription_view.dart';
+import 'package:tm1/presentation/views/Profile/Profiletecnico/profile_view_tecnico.dart';
 import 'package:tm1/presentation/views/Register/register_tecnico.dart';
 import 'package:tm1/presentation/views/Register/register_user.dart';
+import 'package:tm1/presentation/views/Request/RequestTecnico/request_view_tecnico.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/login_screen',
@@ -36,9 +43,44 @@ final appRouter = GoRouter(
       builder: (context, state) => const RequestScreen(),
     ),
     GoRoute(
+      path: '/RVtecnico',
+      name: RequestViewTecnico.name,
+      builder: (context, state) => const RequestViewTecnico(),
+    ),
+    GoRoute(
       path: '/Register',
       name: RegisterScreen.name,
       builder: (context, state) => const RegisterScreen(),
+    ),
+    GoRoute(
+      path: '/Pcard',
+      name: SubscriptionView.name,
+      builder: (context, state) => const SubscriptionView(), 
+    ),
+    GoRoute(
+      path: '/HVtecnico',
+      name: HomeViewTecnico.name,
+      builder: (context, state) => const HomeViewTecnico(), 
+    ),
+    GoRoute(
+      path: '/Ptecnico',
+      name: ProfileViewTecnico.name,
+      builder: (context, state) => const ProfileViewTecnico(), 
+    ),
+    GoRoute(
+      path: '/Paymment',
+      name: PaymmentScreen.name,
+      builder: (context, state) => const PaymmentScreen(),
+    ),
+    GoRoute(
+      path: '/Category',
+      name: CategoryScreen.name,
+      builder: (context, state) => const CategoryScreen(),
+    ),
+    GoRoute(
+      path: '/Cprofile',
+      name: CategoryProfileEdit.name,
+      builder: (context, state) => const CategoryProfileEdit(),
     ),
     GoRoute(
       path: '/RUser',
@@ -60,6 +102,7 @@ final appRouter = GoRouter(
       name: ResetPassword.name,
       builder: (context, state) => const ResetPassword(),
     ),
+    
     GoRoute(
       path: '/tecnicos/:categoria',
       name: TecnicosView.name,

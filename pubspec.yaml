@@ -90,6 +90,14 @@ flutter:
       fonts:
         - asset: assets/fonts/Inter-VariableFont_opsz,wght.ttf
 
+    - family: PoppinsBlack
+      fonts:
+        - asset: assets/fonts/Poppins/Poppins-Black.ttf
+
+    - family: PoppinsLight
+      fonts:
+        - asset: assets/fonts/Poppins/Poppins-Light.ttf
+
     # - family: Schyler
   #     fonts:
   #       - asset: fonts/Schyler-Regular.ttf

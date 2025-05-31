@@ -74,7 +74,7 @@ class LoginView extends StatelessWidget {
                           width: 320,
                           child: ElevatedButton(
                             onPressed: () {
-                              context.go('/Home');
+                              context.go('/Paymment');
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.primary,

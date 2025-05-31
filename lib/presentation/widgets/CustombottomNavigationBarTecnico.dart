@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class CustomBottomNaviationBar extends StatelessWidget {
-  const CustomBottomNaviationBar({super.key, required this.currentIndex});
+class Custombottomnavigationbartecnico extends StatelessWidget {
+  const Custombottomnavigationbartecnico({super.key, required this.currentIndex});
 
   final int currentIndex;
 
   void onItemTaped(BuildContext context, int index){
     switch (index) {
       case 0:
-        context.go('/Home');
+        context.go('/HVtecnico');
         break;
       case 1:
-        context.go('/Request');
+        context.go('/RVtecnico');
         break;
       case 2:
-        context.go('/Profile');
+        context.go('/Category');
         break;
-      // case 3:
-      //   context.go('');
-      //   break;
+      case 3:
+        context.go('/Ptecnico');
+        break;
     }
   }
 
@@ -38,6 +38,10 @@ class CustomBottomNaviationBar extends StatelessWidget {
         BottomNavigationBarItem(
           icon: Icon(Icons.mail),
           label: 'Notificaciones',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.manage_accounts),
+          label: 'Perfil',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person),

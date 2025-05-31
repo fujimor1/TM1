@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tm1/config/theme/app_colors.dart';
 
 class DatoPerfil extends StatelessWidget {
   final String label;
@@ -9,7 +10,7 @@ class DatoPerfil extends StatelessWidget {
     super.key,
     required this.label,
     required this.value,
-    this.color = Colors.black87,
+    this.color = AppColors.primary,
   });
 
   @override
