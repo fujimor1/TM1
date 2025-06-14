@@ -7,6 +7,8 @@ class CustomTextField extends StatelessWidget {
   final TextInputType keyboardType;
   final Icon? suffixIcon;
   final bool enabled;
+  final TextEditingController? controller; // Nuevo: Controlador
+  final String? Function(String?)? validator; // Nuevo: Validador
 
   const CustomTextField({
     super.key,
@@ -16,6 +18,8 @@ class CustomTextField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.suffixIcon,
     this.enabled = true,
+    this.controller, // Incluir en el constructor
+    this.validator, // Incluir en el constructor
   });
 
   @override
@@ -25,13 +29,18 @@ class CustomTextField extends StatelessWidget {
       children: [
         Text(label, style: const TextStyle(fontWeight: FontWeight.w300, fontFamily: 'Inter')),
         const SizedBox(height: 6),
-        TextField(
+        // **IMPORTANTE**: Cambiar TextField por TextFormField
+        // TextFormField es el widget que soporta 'controller' y 'validator'
+        TextFormField(
+          controller: controller, // Asignar el controlador
           obscureText: obscureText,
-          // keyboardType: keyboardType,
+          keyboardType: keyboardType, // Ahora sí se usará este parámetro
+          validator: validator, // Asignar el validador
           decoration: InputDecoration(
             hintText: hintText,
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
             suffixIcon: suffixIcon,
+            enabled: enabled, // También pasar 'enabled' si lo necesitas
           ),
         ),
         const SizedBox(height: 12),

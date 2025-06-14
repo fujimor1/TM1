@@ -41,15 +41,16 @@ class PaymmentView extends StatelessWidget {
                     height: 80,
                     child: Container(
                       color: Colors.grey.shade300,
-                      child: const Center(
-                        child: Text(
-                          'IMAGEN',
-                          style: TextStyle(
-                            color: Colors.black54,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                      child:  Center(
+                        child: Image.asset('assets/images/BannerBienvenida.jpg'),
+                        // Text(
+                        //   'IMAGEN',
+                        //   style: TextStyle(
+                        //     color: Colors.black54,
+                        //     fontSize: 18,
+                        //     fontWeight: FontWeight.bold,
+                        //   ),
+                        // ),
                       ),
                     ),
                   ),

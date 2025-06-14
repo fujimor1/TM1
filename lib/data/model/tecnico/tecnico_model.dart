@@ -1,0 +1,73 @@
+import 'package:tm1/data/model/user/user_model.dart';
+
+class TecnicoModel {
+  final UserModel usuario;
+  final int? usuarioId;
+  final double? calificacion;
+  final String? fechaVencimiento;
+  final bool suscripcionActiva;
+  final String? fechaInicioSuscripcion;
+  final String? fechaFinSuscripcion;
+  final String? mercadopagoPreferenceId;
+  final String? mercadopagoCollectorId;
+  final List<dynamic> categorias;
+  final List<dynamic> distritos;
+  final List<dynamic> fotosTrabajos; 
+
+  TecnicoModel({
+    required this.usuario,
+    this.usuarioId,
+    this.calificacion,
+    this.fechaVencimiento,
+    required this.suscripcionActiva,
+    this.fechaInicioSuscripcion,
+    this.fechaFinSuscripcion,
+    this.mercadopagoPreferenceId,
+    this.mercadopagoCollectorId,
+    required this.categorias,
+    required this.distritos,
+    required this.fotosTrabajos,
+  });
+
+  factory TecnicoModel.fromJson(Map<String, dynamic> json) {
+    return TecnicoModel(
+      usuario: UserModel.fromJson(json['usuario']),
+      usuarioId: json['usuario']['id'],
+      calificacion: double.tryParse(json['calificacion']?.toString() ?? '0.0') ?? 0.0,
+      fechaVencimiento: json['fecha_vencimiento'],
+      suscripcionActiva: json['suscripcion_activa'] ?? false,
+      fechaInicioSuscripcion: json['fecha_inicio_suscripcion'],
+      fechaFinSuscripcion: json['fecha_fin_suscripcion'],
+      mercadopagoPreferenceId: json['mercadopago_preference_id'],
+      mercadopagoCollectorId: json['mercadopago_collector_id'],
+      categorias: json['categorias'] is List ? List<dynamic>.from(json['categorias']) : [],
+      distritos: json['distritos'] is List ? List<dynamic>.from(json['distritos']) : [],
+      fotosTrabajos: json['fotos_trabajos'] is List ? List<dynamic>.from(json['fotos_trabajos']) : [],
+    );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'usuario': usuario.toJson(), 
+      // usuario_id es redundante si envías el objeto usuario completo,
+      // pero se puede incluir si el backend lo espera así en alguna operación.
+      // 'usuario_id': usuario.id,
+      'calificacion': calificacion,
+      'fecha_vencimiento': fechaVencimiento,
+      'suscripcion_activa': suscripcionActiva,
+      'fecha_inicio_suscripcion': fechaInicioSuscripcion,
+      'fecha_fin_suscripcion': fechaFinSuscripcion,
+      'mercadopago_preference_id': mercadopagoPreferenceId,
+      'mercadopago_collector_id': mercadopagoCollectorId,
+      'categorias': categorias,
+      'distritos': distritos,
+      'fotos_trabajos': fotosTrabajos,
+    };
+  }
+
+  Map<String, dynamic> toJsonForPost() {
+    return {
+      'usuario_id': usuario.id,
+      // 'fecha_vencimiento': fechaVencimiento,
+    };
+  }
+}

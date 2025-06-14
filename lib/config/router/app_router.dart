@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tm1/presentation/screens/Category/category_screen.dart';
 import 'package:tm1/presentation/screens/Register/register_screen.dart';
@@ -16,6 +17,7 @@ import 'package:tm1/presentation/views/Login/reset_view.dart';
 import 'package:tm1/presentation/views/Paymment/subscription_view.dart';
 import 'package:tm1/presentation/views/Profile/Profiletecnico/profile_view_tecnico.dart';
 import 'package:tm1/presentation/views/Register/register_tecnico.dart';
+import 'package:tm1/presentation/views/Register/register_tecnico_second.dart';
 import 'package:tm1/presentation/views/Register/register_user.dart';
 import 'package:tm1/presentation/views/Request/RequestTecnico/request_view_tecnico.dart';
 
@@ -91,6 +93,14 @@ final appRouter = GoRouter(
       path: '/RTecnico',
       name: RegisterTecnico.name,
       builder: (context, state) => const RegisterTecnico(),
+    ),
+    GoRoute(
+      path: '/RSTecnico/:id',
+      name: RegisterTecnicoSecond.name,
+      builder: (context, state) {
+        final id = state.pathParameters['id'];
+        return RegisterTecnicoSecond(id: id);
+      },
     ),
     GoRoute(
       path: '/Reset',

@@ -4,7 +4,7 @@ import 'package:tm1/config/theme/app_colors.dart'; // Asegúrate de que esta rut
 class RequestDetails extends StatelessWidget {
   static String name = '/Rdetails'; // Nombre para la ruta
 
-  final Map<String, String> requestData; 
+  final Map<String, String> requestData;
 
   const RequestDetails({super.key, required this.requestData});
 
@@ -33,7 +33,9 @@ class RequestDetails extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.all(20.0),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE0F2F7), // Color de fondo de la tarjeta
+                  color: const Color(
+                    0xFFE0F2F7,
+                  ), // Color de fondo de la tarjeta
                   borderRadius: BorderRadius.circular(15),
                   boxShadow: [
                     BoxShadow(
@@ -60,7 +62,9 @@ class RequestDetails extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.of(context).pop(); // Cierra la vista de detalles
+                            Navigator.of(
+                              context,
+                            ).pop(); // Cierra la vista de detalles
                           },
                           child: const Icon(
                             Icons.close,
@@ -71,7 +75,10 @@ class RequestDetails extends StatelessWidget {
                       ],
                     ),
                     const Divider(height: 20, thickness: 1, color: Colors.grey),
-                    _buildInfoRow('Descripción:', requestData['descripcion'] ?? 'No disponible'), //
+                    _buildInfoRow(
+                      'Descripción:',
+                      requestData['descripcion'] ?? 'No disponible',
+                    ), //
                     const SizedBox(height: 10),
                     const Text(
                       'Fotos:', //
@@ -108,12 +115,19 @@ class RequestDetails extends StatelessWidget {
                       onPressed: () {
                         // Lógica para Aceptar la solicitud
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Solicitud ${requestData['title']} Aceptada')),
+                          SnackBar(
+                            content: Text(
+                              'Solicitud ${requestData['title']} Aceptada',
+                            ),
+                          ),
                         );
-                        Navigator.of(context).pop(); // Vuelve a la vista anterior
+                        Navigator.of(
+                          context,
+                        ).pop(); // Vuelve a la vista anterior
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary, // Color verde para Aceptar
+                        backgroundColor:
+                            AppColors.primary, // Color verde para Aceptar
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -123,7 +137,10 @@ class RequestDetails extends StatelessWidget {
                       ),
                       child: const Text(
                         'Aceptar', //
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
@@ -133,12 +150,19 @@ class RequestDetails extends StatelessWidget {
                       onPressed: () {
                         // Lógica para Rechazar la solicitud
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Solicitud ${requestData['title']} Rechazada')),
+                          SnackBar(
+                            content: Text(
+                              'Solicitud ${requestData['title']} Rechazada',
+                            ),
+                          ),
                         );
-                        Navigator.of(context).pop(); // Vuelve a la vista anterior
+                        Navigator.of(
+                          context,
+                        ).pop(); // Vuelve a la vista anterior
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red[600], // Color rojo para Rechazar
+                        backgroundColor:
+                            Colors.red[600], // Color rojo para Rechazar
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -148,7 +172,10 @@ class RequestDetails extends StatelessWidget {
                       ),
                       child: const Text(
                         'Rechazar', //
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
@@ -175,9 +202,7 @@ class RequestDetails extends StatelessWidget {
           children: [
             TextSpan(
               text: value,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -195,11 +220,17 @@ class RequestDetails extends StatelessWidget {
         color: Colors.grey[300],
         borderRadius: BorderRadius.circular(8),
         image: const DecorationImage(
-          image: AssetImage('assets/placeholder_key.png'), // Reemplaza con tu imagen si la tienes
+          image: AssetImage(
+            'assets/placeholder_key.png',
+          ), // Reemplaza con tu imagen si la tienes
           fit: BoxFit.cover,
         ),
       ),
-      child: const Icon(Icons.image, color: Colors.grey, size: 50), // Icono de placeholder si no hay imagen
+      child: const Icon(
+        Icons.image,
+        color: Colors.grey,
+        size: 50,
+      ), // Icono de placeholder si no hay imagen
     );
   }
 }

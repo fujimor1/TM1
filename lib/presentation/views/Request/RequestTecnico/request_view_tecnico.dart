@@ -23,8 +23,8 @@ class _RequestViewTecnicoState extends State<RequestViewTecnico> {
       'distrito': 'Villa el Salvador',
       'direccion': 'Mz. M St. 3 Gr. 11',
       'estado': 'Pendiente',
-      'descripcion': 'Se rompió mi llave y se quedó dentro de la cerradura.', // Añadida descripción para el detalle
-      'fotos': 'url_foto1,url_foto2' // Puedes añadir URLs de fotos aquí si las usarás en RequestDetails
+      'descripcion': 'Se rompió mi llave y se quedó dentro de la cerradura.', 
+      'fotos': 'url_foto1,url_foto2'
     },
     {
       'title': 'FUGAS DE AGUA',

@@ -31,10 +31,14 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
+  jwt_decoder: ^2.0.1
   go_router: ^14.0.1
   dio: ^5.1.1
   flutter_bloc: ^9.0.0
   flutter_riverpod: ^2.4.9
+  equatable: ^2.0.5
+  get_it: ^7.6.7
+  image_picker: ^1.0.7
   # shared_preferences: ^2.5.3
   font_awesome_flutter: ^10.4.0
 
@@ -67,8 +71,9 @@ flutter:
     - assets/images/Contaco.png
     - assets/images/Logo.png
     - assets/images/ResetPassword.jpg
-    - assets/images/Tecnico.jpeg
     - assets/images/BOB.jpeg
+    - assets/images/BannerBienvenida.jpg
+    - assets/images/BannerChambea.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

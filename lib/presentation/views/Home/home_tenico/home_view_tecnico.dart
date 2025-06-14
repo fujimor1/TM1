@@ -41,7 +41,10 @@ class HomeViewTecnico extends StatelessWidget {
                     child: Column(
                       children: [
                         const SizedBox(height: 10),
-                        Container(width: 200, height: 50, color: Colors.black),
+                        // Container(width: 200, height: 50, color: Colors.black),
+                        Image.asset('assets/images/BannerChambea.jpg',
+                          fit: BoxFit.cover,
+                        ),
                         const SizedBox(height: 25),
                         const Text(
                           'Cualquier consulta puede comunicarse al siguiente número',
@@ -53,7 +56,7 @@ class HomeViewTecnico extends StatelessWidget {
                           ),
                         ),
 
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 15),
 
                         const Text(
                           'XXX - XXX - XXX',
@@ -64,7 +67,7 @@ class HomeViewTecnico extends StatelessWidget {
                           ),
                         ),
 
-                        const SizedBox(height: 40),
+                        const SizedBox(height: 30),
 
                         const Text(
                           'TÚ ERES\nNUESTRA\nPRIORIDAD',

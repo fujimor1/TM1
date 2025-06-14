@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tm1/presentation/bloc/district/district_cubit.dart';
 import 'package:tm1/presentation/widgets/Widgets.dart';
 
 class TecnicosView extends StatefulWidget {
@@ -16,12 +18,7 @@ class TecnicosView extends StatefulWidget {
 class _TecnicosViewState extends State<TecnicosView> {
   String? distritoSeleccionado;
 
-  final List<String> distritos = [
-    'Villa el Salvador',
-    'San Juan de Miraflores',
-    'Chorrillos',
-  ];
-
+  // Lista de técnicos hardcoded como antes
   final List<Map<String, dynamic>> tecnicos = [
     {
       'nombre': 'Rebeca Perez',
@@ -31,56 +28,18 @@ class _TecnicosViewState extends State<TecnicosView> {
       'imagen': 'https://randomuser.me/api/portraits/women/1.jpg',
       'descripcion': 'Experiencia en instalación, mantenimiento y reparación de cerraduras, candados y sistemas de seguridad.'
     },
-    {
-      'nombre': 'Pedro Vega',
-      'categoria': 'Cerrajero',
-      'distrito': 'Villa el Salvador',
-      'rating': 4,
-      'imagen': 'https://randomuser.me/api/portraits/men/2.jpg',
-      'descripcion': 'Experiencia en instalación, mantenimiento y reparación de cerraduras, candados y sistemas de seguridad.'
-    },
-    {
-      'nombre': 'Miguel Coronado',
-      'categoria': 'Cerrajero',
-      'distrito': 'San Juan de Miraflores',
-      'rating': 5,
-      'imagen': 'https://randomuser.me/api/portraits/men/3.jpg',
-      'descripcion': 'Experiencia en instalación, mantenimiento y reparación de cerraduras, candados y sistemas de seguridad.'
-    },
-    {
-      'nombre': 'Sandra Condori',
-      'categoria': 'Cerrajero',
-      'distrito': 'Chorrillos',
-      'rating': 4,
-      'imagen': 'https://randomuser.me/api/portraits/women/4.jpg',
-      'descripcion': 'Experiencia en instalación, mantenimiento y reparación de cerraduras, candados y sistemas de seguridad.'
-    },
-    {
-      'nombre': 'Alberto Ferreyro',
-      'categoria': 'Cerrajero',
-      'distrito': 'Villa el Salvador',
-      'rating': 2,
-      'imagen': 'https://randomuser.me/api/portraits/men/5.jpg',
-      'descripcion': 'Experiencia en instalación, mantenimiento y reparación de cerraduras, candados y sistemas de seguridad.'
-    },
-    {
-      'nombre': 'Marco Ramos',
-      'categoria': 'Cerrajero',
-      'distrito': 'San Juan de Miraflores',
-      'rating': 3,
-      'imagen': 'https://randomuser.me/api/portraits/men/6.jpg',
-      'descripcion': 'Experiencia en instalación, mantenimiento y reparación de cerraduras, candados y sistemas de seguridad.'
-    },
+    // ... más técnicos ...
   ];
 
   @override
-  Widget build(BuildContext context) {
-    final filtrados = tecnicos.where((t) {
-      final coincideCategoria = t['categoria'] == widget.categoria;
-      final coincideDistrito = distritoSeleccionado == null || t['distrito'] == distritoSeleccionado;
-      return coincideCategoria && coincideDistrito;
-    }).toList();
+  void initState() {
+    super.initState();
+    // Carga distritos al iniciar la pantalla
+    context.read<DistrictCubit>().getDistricts();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: const CustomBottomNaviationBar(currentIndex: 1),
       appBar: AppBar(
@@ -88,97 +47,151 @@ class _TecnicosViewState extends State<TecnicosView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(widget.categoria.toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold)),
-            Text(
-              distritoSeleccionado ?? 'Todos los distritos',
-              style: const TextStyle(fontSize: 14, color: Colors.blue),
+            BlocBuilder<DistrictCubit, DistrictState>(
+              builder: (context, state) {
+                if (state is DistrictLoaded) {
+                  return Text(
+                    distritoSeleccionado ?? 'Todos los distritos',
+                    style: const TextStyle(fontSize: 14, color: Colors.blue),
+                  );
+                } else if (state is DistrictLoading) {
+                  return const SizedBox(
+                    height: 16,
+                    width: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  );
+                } else if (state is DistrictError) {
+                  return const Text(
+                    'Error al cargar distritos',
+                    style: TextStyle(fontSize: 14, color: Colors.red),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
             ),
           ],
         ),
         actions: [
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.location_on),
-            onSelected: (value) {
-              setState(() {
-                distritoSeleccionado = value;
-              });
-            },
-            itemBuilder: (context) {
-              return distritos.map((d) {
-                return PopupMenuItem(
-                  value: d,
-                  child: Text(d),
+          BlocBuilder<DistrictCubit, DistrictState>(
+            builder: (context, state) {
+              if (state is DistrictLoaded) {
+                final distritos = state.district.map((e) => e['nombre'] as String).toList();
+
+                return PopupMenuButton<String>(
+                  icon: const Icon(Icons.location_on),
+                  onSelected: (value) {
+                    setState(() {
+                      distritoSeleccionado = value;
+                    });
+                  },
+                  itemBuilder: (context) {
+                    return distritos.map((d) {
+                      return PopupMenuItem(
+                        value: d,
+                        child: Text(d),
+                      );
+                    }).toList();
+                  },
                 );
-              }).toList();
+              } else if (state is DistrictLoading) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Center(
+                    child: SizedBox(
+                      height: 24,
+                      width: 24,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  ),
+                );
+              } else {
+                return const SizedBox.shrink();
+              }
             },
           ),
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
-        child: GridView.builder(
-          itemCount: filtrados.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 20,
-            crossAxisSpacing: 20,
-            childAspectRatio: 0.85,
-          ),
-          itemBuilder: (context, index) {
-            final tecnico = filtrados[index];
-            final nombre = tecnico['nombre'] as String;
-            final rating = tecnico['rating'] as int;
-            final imagen = tecnico['imagen'] as String;
+        child: Builder(
+          builder: (context) {
+            // Filtrado de técnicos por categoría y distrito seleccionado
+            final filtrados = tecnicos.where((t) {
+              final coincideCategoria = t['categoria'] == widget.categoria;
+              final coincideDistrito = distritoSeleccionado == null || t['distrito'] == distritoSeleccionado;
+              return coincideCategoria && coincideDistrito;
+            }).toList();
 
-            return InkWell(
-              onTap: () {
-                context.pushNamed('/DetallesTecnico',
-                extra: tecnico
+            if (filtrados.isEmpty) {
+              return const Center(
+                child: Text('No se encontraron técnicos para la selección.'),
+              );
+            }
+
+            return GridView.builder(
+              itemCount: filtrados.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 20,
+                crossAxisSpacing: 20,
+                childAspectRatio: 0.85,
+              ),
+              itemBuilder: (context, index) {
+                final tecnico = filtrados[index];
+                final nombre = tecnico['nombre'] as String;
+                final rating = tecnico['rating'] as int;
+                final imagen = tecnico['imagen'] as String;
+
+                return InkWell(
+                  onTap: () {
+                    context.pushNamed('/DetallesTecnico', extra: tecnico);
+                  },
+                  borderRadius: BorderRadius.circular(16),
+                  child: Column(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.green.shade200, width: 2),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 4,
+                              offset: Offset(2, 2),
+                            )
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Image.network(
+                            imagen,
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        nombre,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          5,
+                          (i) => Icon(
+                            i < rating ? Icons.star : Icons.star_border,
+                            size: 16,
+                            color: Colors.amber,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               },
-              borderRadius: BorderRadius.circular(16),
-              child: Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.green.shade200, width: 2),
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 4,
-                          offset: Offset(2, 2),
-                        )
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: Image.network(
-                        imagen,
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    nombre,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      5,
-                      (i) => Icon(
-                        i < rating ? Icons.star : Icons.star_border,
-                        size: 16,
-                        color: Colors.amber,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
             );
           },
         ),
