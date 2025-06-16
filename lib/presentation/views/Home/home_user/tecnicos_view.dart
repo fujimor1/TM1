@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tm1/presentation/bloc/district/district_cubit.dart';
+import 'package:tm1/presentation/bloc/tecnico/bloc/tecnico_bloc.dart';
 import 'package:tm1/presentation/widgets/Widgets.dart';
 
 class TecnicosView extends StatefulWidget {
   static const String name = '/TecnicosView';
 
   final String categoria;
+  final int? categoryId;
 
-  const TecnicosView({super.key, required this.categoria});
+  const TecnicosView({super.key, required this.categoria, this.categoryId});
 
   @override
   State<TecnicosView> createState() => _TecnicosViewState();
@@ -18,28 +20,25 @@ class TecnicosView extends StatefulWidget {
 class _TecnicosViewState extends State<TecnicosView> {
   String? distritoSeleccionado;
 
-  // Lista de técnicos hardcoded como antes
-  final List<Map<String, dynamic>> tecnicos = [
-    {
-      'nombre': 'Rebeca Perez',
-      'categoria': 'Electricista',
-      'distrito': 'Villa el Salvador',
-      'rating': 5,
-      'imagen': 'https://randomuser.me/api/portraits/women/1.jpg',
-      'descripcion': 'Experiencia en instalación, mantenimiento y reparación de cerraduras, candados y sistemas de seguridad.'
-    },
-    // ... más técnicos ...
-  ];
-
   @override
   void initState() {
     super.initState();
-    // Carga distritos al iniciar la pantalla
     context.read<DistrictCubit>().getDistricts();
+    _loadTecnicos();
+  }
+
+  void _loadTecnicos() {
+    context.read<TecnicoBloc>().add(
+          LoadTecnicosByCategoryAndDistrict(
+            categoryName: widget.categoria,
+            districtName: distritoSeleccionado,
+          ),
+        );
   }
 
   @override
   Widget build(BuildContext context) {
+    print('Id de la categoria seleccionado: ${widget.categoryId}');
     return Scaffold(
       bottomNavigationBar: const CustomBottomNaviationBar(currentIndex: 1),
       appBar: AppBar(
@@ -47,6 +46,7 @@ class _TecnicosViewState extends State<TecnicosView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(widget.categoria.toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold)),
+            // Text('Técnicos de ${widget.categoria} (ID: ${widget.categoryId})'),
             BlocBuilder<DistrictCubit, DistrictState>(
               builder: (context, state) {
                 if (state is DistrictLoaded) {
@@ -83,14 +83,21 @@ class _TecnicosViewState extends State<TecnicosView> {
                     setState(() {
                       distritoSeleccionado = value;
                     });
+                    _loadTecnicos(); // Recarga los técnicos al cambiar el distrito
                   },
                   itemBuilder: (context) {
-                    return distritos.map((d) {
-                      return PopupMenuItem(
-                        value: d,
-                        child: Text(d),
-                      );
-                    }).toList();
+                    return [
+                      const PopupMenuItem(
+                        value: null, // Opción para "Todos los distritos"
+                        child: Text('Todos los distritos'),
+                      ),
+                      ...distritos.map((d) {
+                        return PopupMenuItem(
+                          value: d,
+                          child: Text(d),
+                        );
+                      }).toList(),
+                    ];
                   },
                 );
               } else if (state is DistrictLoading) {
@@ -113,85 +120,97 @@ class _TecnicosViewState extends State<TecnicosView> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
-        child: Builder(
-          builder: (context) {
-            // Filtrado de técnicos por categoría y distrito seleccionado
-            final filtrados = tecnicos.where((t) {
-              final coincideCategoria = t['categoria'] == widget.categoria;
-              final coincideDistrito = distritoSeleccionado == null || t['distrito'] == distritoSeleccionado;
-              return coincideCategoria && coincideDistrito;
-            }).toList();
+        child: BlocBuilder<TecnicoBloc, TecnicoState>(
+          builder: (context, state) {
+            if (state is TecnicoLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is TecnicosListLoaded) {
+              final tecnicos = state.tecnicos;
 
-            if (filtrados.isEmpty) {
-              return const Center(
-                child: Text('No se encontraron técnicos para la selección.'),
+              if (tecnicos.isEmpty) {
+                return const Center(
+                  child: Text('No se encontraron técnicos para la selección.'),
+                );
+              }
+
+              return GridView.builder(
+                itemCount: tecnicos.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 20,
+                  crossAxisSpacing: 20,
+                  childAspectRatio: 0.85,
+                ),
+                itemBuilder: (context, index) {
+                  final tecnico = tecnicos[index];
+                  final nombre = tecnico.usuario.username ?? 'Nombre Desconocido';
+                  final rating = tecnico.calificacion ?? 0;
+                  // final imagen = tecnico.usuario.imagen ?? 'https://via.placeholder.com/100'; 
+
+                  return InkWell(
+                    onTap: () {
+                      context.pushNamed('/DetallesTecnico', 
+                      extra: {
+                        'tecnico': tecnico,
+                        'categoria': widget.categoria,
+                        'distrito': distritoSeleccionado,
+                        'id': widget.categoryId,
+                      });
+                    },
+                    borderRadius: BorderRadius.circular(16),
+                    child: Column(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.green.shade200, width: 2),
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 4,
+                                offset: Offset(2, 2),
+                              )
+                            ],
+                          ),
+                          // child: ClipRRect(
+                          //   borderRadius: BorderRadius.circular(16),
+                          //   child: Image.network(
+                          //     imagen,
+                          //     width: 100,
+                          //     height: 100,
+                          //     fit: BoxFit.cover,
+                          //   ),
+                          // ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          nombre,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(
+                            5,
+                            (i) => Icon(
+                              i < rating ? Icons.star : Icons.star_border,
+                              size: 16,
+                              color: Colors.amber,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            } else if (state is TecnicoError) {
+              return Center(
+                child: Text('Error al cargar técnicos: "Desconocido"}'),
               );
             }
-
-            return GridView.builder(
-              itemCount: filtrados.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 20,
-                crossAxisSpacing: 20,
-                childAspectRatio: 0.85,
-              ),
-              itemBuilder: (context, index) {
-                final tecnico = filtrados[index];
-                final nombre = tecnico['nombre'] as String;
-                final rating = tecnico['rating'] as int;
-                final imagen = tecnico['imagen'] as String;
-
-                return InkWell(
-                  onTap: () {
-                    context.pushNamed('/DetallesTecnico', extra: tecnico);
-                  },
-                  borderRadius: BorderRadius.circular(16),
-                  child: Column(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.green.shade200, width: 2),
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 4,
-                              offset: Offset(2, 2),
-                            )
-                          ],
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: Image.network(
-                            imagen,
-                            width: 100,
-                            height: 100,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        nombre,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(
-                          5,
-                          (i) => Icon(
-                            i < rating ? Icons.star : Icons.star_border,
-                            size: 16,
-                            color: Colors.amber,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
+            return const Center(
+              child: Text('Selecciona una categoría para ver los técnicos.'),
             );
           },
         ),

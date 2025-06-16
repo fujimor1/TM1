@@ -24,6 +24,7 @@ class TecnicoBloc extends Bloc<TecnicoEvent, TecnicoState> {
   TecnicoBloc() : super(TecnicoInitial()) {
     on<InsertTecnicoEvent>(_onInsertTecnicoEvent);
     on<LoadTecnicosEvent>(_onLoadTecnicosEvent);
+    on<LoadTecnicosByCategoryAndDistrict>(_onLoadTecnicosByCategoryAndDistrict);
   }
 
   Future<void> _onInsertTecnicoEvent(
@@ -90,6 +91,26 @@ class TecnicoBloc extends Bloc<TecnicoEvent, TecnicoState> {
       final List<TecnicoModel> tecnicos = await _tecnicoRepository.getTecnicos();
       emit(TecnicosListLoaded(tecnicos));
     } catch (e){
+    }
+  }
+
+  Future<void> _onLoadTecnicosByCategoryAndDistrict(
+    LoadTecnicosByCategoryAndDistrict event,
+    Emitter<TecnicoState> emit,
+  ) async {
+    emit(TecnicoLoading());
+    try {
+      final List<TecnicoModel> tecnicos = await _tecnicoRepository.getTecnicos(
+        categoryName: event.categoryName,
+        districtName: event.districtName,
+      );
+      print('TecnicoBloc: Received ${tecnicos.length} filtered tecnicos from datasource.');
+      if (tecnicos.isEmpty) {
+          print('TecnicoBloc: No tecnicos found after client-side filtering.');
+      }
+      emit(TecnicosListLoaded(tecnicos));
+    } catch (e) {
+
     }
   }
 }

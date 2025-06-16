@@ -1,3 +1,7 @@
+import 'dart:math';
+
+import 'package:tm1/data/model/categories/categories_models.dart';
+import 'package:tm1/data/model/district/district_model.dart';
 import 'package:tm1/data/model/user/user_model.dart';
 
 class TecnicoModel {
@@ -10,8 +14,8 @@ class TecnicoModel {
   final String? fechaFinSuscripcion;
   final String? mercadopagoPreferenceId;
   final String? mercadopagoCollectorId;
-  final List<dynamic> categorias;
-  final List<dynamic> distritos;
+  final List<CategoriesModel> categorias;
+  final List<DistrictModel> distritos;
   final List<dynamic> fotosTrabajos; 
 
   TecnicoModel({
@@ -40,8 +44,10 @@ class TecnicoModel {
       fechaFinSuscripcion: json['fecha_fin_suscripcion'],
       mercadopagoPreferenceId: json['mercadopago_preference_id'],
       mercadopagoCollectorId: json['mercadopago_collector_id'],
-      categorias: json['categorias'] is List ? List<dynamic>.from(json['categorias']) : [],
-      distritos: json['distritos'] is List ? List<dynamic>.from(json['distritos']) : [],
+      categorias: (json['categorias'] as List<dynamic>?)?.map((e) => CategoriesModel.fromJson(e as Map<String, dynamic>)).toList() ?? [],
+      // categorias: json['categorias'] is List ? List<dynamic>.from(json['categorias']) : [],
+      // distritos: json['distritos'] is List ? List<dynamic>.from(json['distritos']) : [],
+      distritos: (json['distritos'] as List<dynamic>?)?.map((e) => DistrictModel.fromJson(e as Map<String, dynamic>)).toList() ?? [],
       fotosTrabajos: json['fotos_trabajos'] is List ? List<dynamic>.from(json['fotos_trabajos']) : [],
     );
   }

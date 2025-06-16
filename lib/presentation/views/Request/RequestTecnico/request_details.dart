@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:tm1/config/theme/app_colors.dart'; // Asegúrate de que esta ruta sea correcta
+import 'package:tm1/config/theme/app_colors.dart';
 
 class RequestDetails extends StatelessWidget {
-  static String name = '/Rdetails'; // Nombre para la ruta
+  static String name = '/Rdetails';
 
   final Map<String, String> requestData;
 

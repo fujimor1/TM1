@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';s
 import 'package:go_router/go_router.dart';
+import 'package:tm1/data/model/tecnico/tecnico_model.dart';
 import 'package:tm1/presentation/screens/Category/category_screen.dart';
 import 'package:tm1/presentation/screens/Register/register_screen.dart';
 import 'package:tm1/presentation/screens/Request/request_screen.dart';
@@ -57,17 +58,17 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/Pcard',
       name: SubscriptionView.name,
-      builder: (context, state) => const SubscriptionView(), 
+      builder: (context, state) => const SubscriptionView(),
     ),
     GoRoute(
       path: '/HVtecnico',
       name: HomeViewTecnico.name,
-      builder: (context, state) => const HomeViewTecnico(), 
+      builder: (context, state) => const HomeViewTecnico(),
     ),
     GoRoute(
       path: '/Ptecnico',
       name: ProfileViewTecnico.name,
-      builder: (context, state) => const ProfileViewTecnico(), 
+      builder: (context, state) => const ProfileViewTecnico(),
     ),
     GoRoute(
       path: '/Paymment',
@@ -112,38 +113,53 @@ final appRouter = GoRouter(
       name: ResetPassword.name,
       builder: (context, state) => const ResetPassword(),
     ),
-    
+
+    //TECNICOS_VIEW (LISTA DE TECNICOS)
     GoRoute(
-      path: '/tecnicos/:categoria',
+      path: '/TecnicosView',
       name: TecnicosView.name,
       builder: (context, state) {
-        final categoria = state.pathParameters['categoria']!;
-        return TecnicosView(categoria: categoria);
+        final Map<String, dynamic>? data = state.extra as Map<String, dynamic>?;
+        final String nombreCategoria = data?['categoria'] as String? ?? 'Desconocida';
+        final int idCategoria = data?['id'] as int? ?? 0;
+
+        return TecnicosView(
+          categoria: nombreCategoria,
+          categoryId: idCategoria,
+        );
       },
     ),
+
     GoRoute(
       path: '/DetallesTecnico',
       name: DetalleTecnicoView.name,
       builder: (context, state) {
-        final tecnico = state.extra as Map<String, dynamic>;
+        final data = state.extra as Map<String, dynamic>;
+        final tecnico = data['tecnico'] as TecnicoModel;
+        final categoria = data['categoria'] as String? ?? 'Distrito no especificado';
+        final distrito = data['distrito'] as String? ?? 'Distrito no especificado';
+        final categoryId = data['id'] as int;
+
         return DetalleTecnicoView(
-          nombre: tecnico['nombre'],
-          imagenUrl: tecnico['imagen'],
-          descripcion: tecnico['descripcion'],
-          categoria: tecnico['categoria'], 
-          distrito: tecnico['distrito'],
+          tecnico: tecnico,
+          categoria: categoria,
+          distrito: distrito,
+          categoryId: categoryId,
         );
       },
     ),
+
     GoRoute(
       path: '/Solicitud',
       name: SolicitudServicioView.name,
       builder: (context, state) {
-        final data = state.extra as Map<String, String>;
-        return SolicitudServicioView(
-          categoria: data['categoria']!,
-          distrito: data['distrito']!,
-        );
+        final data = state.extra as Map<String, dynamic>;
+        final categoria = data['categoria'] as String;
+        final distrito = data['distrito'] as String;
+        final categoryId = data['categoryId'] as int;
+        final tecnicoId = data['tecnicoId'] as int;
+
+        return SolicitudServicioView(categoria: categoria, distrito: distrito, categoryId:categoryId, tecnicoId:tecnicoId);
       },
     ),
   ],

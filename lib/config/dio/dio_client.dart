@@ -203,4 +203,47 @@ class DioClient {
       );
     }
   }
+
+  Future<Response> getWithParams(
+    String url, {
+    required Map<String, dynamic>
+    queryParams,
+    bool istoken = false,
+  }) async {
+    try {
+      final fullUrl = _baseUrl + url;
+      final headers = <String, String>{};
+
+      if (istoken && DioClient.token.isNotEmpty) {
+        headers['Authorization'] =
+            'Bearer ${DioClient.token}'; // Usar DioClient.token
+      }
+
+      log(
+        'GET with Params Request --> $fullUrl con queryParameters: $queryParams',
+      );
+      final response = await _dio.get(
+        fullUrl,
+        queryParameters: queryParams, // Aquí pasamos los parámetros de consulta
+        options: Options(headers: headers.isNotEmpty ? headers : null),
+      );
+      log(
+        'GET with Params Response ${response.statusCode} --> ${response.data}',
+      );
+      return response;
+    } on DioException catch (e) {
+      _handleError(
+        'Error en la solicitud GET con parámetros (DioException): ${e.message}',
+      );
+      if (e.response != null) {
+        log(
+          'GET with Params Error Response (DioException): ${e.response?.statusCode} --> ${e.response?.data}',
+        );
+      }
+      rethrow;
+    } catch (e) {
+      _handleError('Error inesperado en la solicitud GET con parámetros: $e');
+      rethrow;
+    }
+  }
 }

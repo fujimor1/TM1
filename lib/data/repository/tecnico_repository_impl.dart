@@ -13,7 +13,7 @@ class TecnicoRepositoryImpl implements TecnicoRepository{
   }
   
   @override
-  Future<List<TecnicoModel>> getTecnicos() async {
-    return await datasource.getTecnicos();
+  Future<List<TecnicoModel>> getTecnicos({String? categoryName, String? districtName}) async {
+    return await datasource.getTecnicos(categoryName: categoryName, districtName: districtName);
   }
 }

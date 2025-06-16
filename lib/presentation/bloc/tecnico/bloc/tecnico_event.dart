@@ -24,3 +24,13 @@ class LoadTecnicosEvent extends TecnicoEvent {
   @override
   List<Object> get props => [];
 }
+
+class LoadTecnicosByCategoryAndDistrict extends TecnicoEvent {
+  final String categoryName;
+  final String? districtName;
+
+  const LoadTecnicosByCategoryAndDistrict({required this.categoryName, this.districtName});
+
+  @override
+  List<Object> get props => [categoryName, districtName ?? ''];
+}

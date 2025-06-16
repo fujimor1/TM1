@@ -7,6 +7,7 @@ import 'package:tm1/presentation/bloc/categories/categories_cubit.dart';
 import 'package:tm1/presentation/bloc/district/district_cubit.dart';
 import 'package:tm1/presentation/bloc/register/register_cubit.dart';
 import 'package:tm1/presentation/bloc/services_locator.dart';
+import 'package:tm1/presentation/bloc/solicitud/bloc/solicitud_bloc.dart';
 import 'package:tm1/presentation/bloc/tecnico/bloc/tecnico_bloc.dart';
 
 void main() async{
@@ -31,6 +32,7 @@ class BlocsProviders extends StatelessWidget {
         BlocProvider(create: (context) => getIt<DistrictCubit>()),
         BlocProvider(create: (context) => getIt<ProfileBloc>()),
         BlocProvider(create: (context) => getIt<TecnicoBloc>()),
+        BlocProvider(create: (context) => getIt<SolicitudBloc>()),
       ], 
       child: const MyApp()
     

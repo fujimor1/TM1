@@ -9,7 +9,6 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Llamamos a getCategories solo una vez al cargar la vista
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<CategoriesCubit>().getCategories();
     });
@@ -52,7 +51,10 @@ class HomeView extends StatelessWidget {
                             onTap: () {
                               context.pushNamed(
                                 '/TecnicosView',
-                                pathParameters: {'categoria': cat['nombre']},
+                                extra: {
+                                  'categoria': cat['nombre'],
+                                  'id': cat['id'],
+                                },
                               );
                             },
                             borderRadius: BorderRadius.circular(12),
@@ -61,7 +63,7 @@ class HomeView extends StatelessWidget {
                                 Container(
                                   padding: const EdgeInsets.all(30),
                                   decoration: const BoxDecoration(
-                                    color: Color(0xFF5FB7B7),
+                                    color: Color.fromARGB(255, 234, 245, 245),
                                     shape: BoxShape.circle,
                                   ),
                                   child: const Icon(

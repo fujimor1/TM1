@@ -11,5 +11,4 @@ class CategoriesRepositoryImpl implements CategoriesRepository{
   Future<List<CategoriesModel>> getCategories() async {
     return await datasource.getCategories();
   }
-
 }
