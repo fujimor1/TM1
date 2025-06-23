@@ -65,11 +65,11 @@ final appRouter = GoRouter(
       name: RegisterScreen.name,
       builder: (context, state) => const RegisterScreen(),
     ),
-    // GoRoute(
-    //   path: '/Pcard',
-    //   name: SubscriptionView.name,
-    //   builder: (context, state) => const SubscriptionView(),
-    // ),
+    GoRoute(
+      path: '/Pcard',
+      name: SubscriptionView.name,
+      builder: (context, state) => const SubscriptionView(),
+    ),
     GoRoute(
       path: '/HVtecnico',
       name: HomeViewTecnico.name,
