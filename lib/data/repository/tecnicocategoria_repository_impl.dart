@@ -11,5 +11,9 @@ class TecnicocategoriaRepositoryImpl implements TecnicocategoriaRepository{
   Future<TecnicoCategoriaModel> insertTecnicoCategoria(Map<String, dynamic> data) {
     return datasource.insertTecnicoCategoria(data);
   }
-
+  
+  @override
+  Future<TecnicoCategoriaModel?> patchTecnicoCategoria(Map<String, dynamic> tecnicocategoria, int idTecnico) async{
+    return await datasource.patchTecnicoCategoria(tecnicocategoria, idTecnico);
+  }
 }

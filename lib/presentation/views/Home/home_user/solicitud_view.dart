@@ -39,13 +39,70 @@ class _SolicitudServicioViewState extends State<SolicitudServicioView> {
     super.dispose();
   }
 
+  Future<void> _showConfirmationDialog(BuildContext context, UserModel? user) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text('Confirmar Solicitud'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('¿Está seguro de que desea enviar esta solicitud de servicio?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('No'),
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Sí'),
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                _submitSolicitud(context, user);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _submitSolicitud(BuildContext context, UserModel? user) {
+    if (user != null && widget.categoryId != null) {
+      final solicitudData = {
+        'cliente_id': user.id, 
+        'tecnico_id': widget.tecnicoId,
+        'categoria_id': widget.categoryId,
+        'direccion': _addressController.text,
+        'titulo': _titleController.text,
+        'descripcion': _descriptionController.text,
+        'estado': 'pendiente',
+        'fotos_solicitud': [], 
+      };
+      context.read<SolicitudBloc>().add(InsertSolicitudEvent(solicitudData));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Faltan datos del usuario o categoría para crear la solicitud.'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     print('Tecnico ID recibido en build: ${widget.tecnicoId}');
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => ProfileBloc()..add(ProfileGetEvent())),
-        BlocProvider(create: (context) => SolicitudBloc()), // Provide SolicitudBloc
+        BlocProvider(create: (context) => SolicitudBloc()),
       ],
       child: Scaffold(
         bottomNavigationBar: const CustomBottomNaviationBar(currentIndex: 0),
@@ -57,7 +114,7 @@ class _SolicitudServicioViewState extends State<SolicitudServicioView> {
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
-          child: BlocListener<SolicitudBloc, SolicitudState>( // Listen for SolicitudBloc state changes
+          child: BlocListener<SolicitudBloc, SolicitudState>(
             listener: (context, state) {
               if (state is SolicitudLoaded) {
                 // Show success message
@@ -67,13 +124,12 @@ class _SolicitudServicioViewState extends State<SolicitudServicioView> {
                     backgroundColor: Colors.green,
                   ),
                 );
-                // Navigate to home or another appropriate screen
                 context.go('/Home');
               } else if (state is SolicitudError) {
                 // Show error message
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Error al crear la solicitud. Intente de nuevo.'),
+                  SnackBar(
+                    content: Text('Error al crear la solicitud:'),
                     backgroundColor: Colors.red,
                   ),
                 );
@@ -91,28 +147,28 @@ class _SolicitudServicioViewState extends State<SolicitudServicioView> {
                       CustomTextField(
                         label: 'Título del problema',
                         hintText: 'Ej. Llave atorada',
-                        controller: _titleController, // Assign controller
+                        controller: _titleController,
                       ),
                       CustomTextField(
                         label: 'Categoría',
-                        hintText: widget.categoria, // Use widget.categoria
+                        hintText: widget.categoria,
                         enabled: false,
                       ),
                       CustomTextField(
                         label: 'Distrito',
-                        hintText: widget.distrito, // Use widget.distrito
+                        hintText: widget.distrito,
                         enabled: false,
                       ),
                       CustomTextField(
                         label: 'Dirección',
                         hintText: 'Mz. M St. 3 Gr. 11',
-                        controller: _addressController, // Assign controller
+                        controller: _addressController,
                       ),
                       CustomTextField(
                         label: 'Descripción del problema',
                         hintText: 'Se rompió mi llave y se quedó dentro de la cerradura.',
                         keyboardType: TextInputType.multiline,
-                        controller: _descriptionController, // Assign controller
+                        controller: _descriptionController,
                       ),
                       const SizedBox(height: 8),
                       const Text(
@@ -148,29 +204,9 @@ class _SolicitudServicioViewState extends State<SolicitudServicioView> {
                           builder: (context, solicitudState) {
                             return ElevatedButton(
                               onPressed: solicitudState is SolicitudLoading
-                                  ? null // Disable button when loading
+                                  ? null
                                   : () {
-                                      if (user != null && widget.categoryId != null) {
-                                        final solicitudData = {
-                                          'cliente_id': user.id, // Use client ID from profile
-                                          'tecnico_id': widget.tecnicoId, // Can be null
-                                          'categoria_id': widget.categoryId, // Use category ID
-                                          'direccion': _addressController.text,
-                                          'titulo': _titleController.text,
-                                          'descripcion': _descriptionController.text,
-                                          'estado': 'pendiente', // Default status
-                                          'fotos_solicitud': [], // Add logic to handle actual photo uploads
-                                        };
-                                        // Dispatch the InsertSolicitudEvent
-                                        context.read<SolicitudBloc>().add(InsertSolicitudEvent(solicitudData));
-                                      } else {
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(
-                                            content: Text('Faltan datos del usuario o categoría para crear la solicitud.'),
-                                            backgroundColor: Colors.orange,
-                                          ),
-                                        );
-                                      }
+                                      _showConfirmationDialog(context, user);
                                     },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF5FB7B7),

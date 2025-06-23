@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:tm1/config/dio/dio_client.dart';
 
-part 'login_state.dart'; // Asegúrate de que esta línea esté presente y correcta
+part 'login_state.dart'; 
 
 class LoginCubit extends Cubit<LoginState> {
   final DioClient dioClient;

@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tm1/config/theme/app_colors.dart';
-import 'package:tm1/presentation/views/Request/RequestTecnico/request_details.dart';
+import 'package:tm1/data/model/solicitud/solicitud_model.dart';
+import 'package:tm1/presentation/bloc/solicitud/bloc/solicitud_bloc.dart';
 import 'package:tm1/presentation/widgets/CustombottomNavigationBarTecnico.dart';
+import 'package:tm1/presentation/bloc/Profile/bloc/profile_bloc.dart';
+import 'package:tm1/presentation/bloc/tecnico/bloc/tecnico_bloc.dart';
 
 class RequestViewTecnico extends StatefulWidget {
+  static const String name = '/RVtecnico';
+
   const RequestViewTecnico({super.key});
-  static String name = 'RVtecnico';
 
   @override
   State<RequestViewTecnico> createState() => _RequestViewTecnicoState();
@@ -15,312 +21,270 @@ class _RequestViewTecnicoState extends State<RequestViewTecnico> {
   String _selectedEstado = 'Todas';
   String _selectedCategoria = 'Todas';
 
-  final List<Map<String, String>> _allRequests = [
-    {
-      'title': 'LLAVE ATORADA',
-      'cliente': 'Luciana Vasquez',
-      'categoria': 'Cerrajero',
-      'distrito': 'Villa el Salvador',
-      'direccion': 'Mz. M St. 3 Gr. 11',
-      'estado': 'Pendiente',
-      'descripcion': 'Se rompió mi llave y se quedó dentro de la cerradura.', 
-      'fotos': 'url_foto1,url_foto2'
-    },
-    {
-      'title': 'FUGAS DE AGUA',
-      'cliente': 'Carlos Rivera',
-      'categoria': 'Fontanero',
-      'distrito': 'Surco',
-      'direccion': 'Av. Pardo 123',
-      'estado': 'Aceptado',
-      'descripcion': 'Fuga de agua en el lavabo de la cocina.',
-      'fotos': ''
-    },
-    {
-      'title': 'PROBLEMAS ELÉCTRICOS',
-      'cliente': 'Ana Gómez',
-      'categoria': 'Electricista',
-      'distrito': 'Miraflores',
-      'direccion': 'Calle Las Flores 456',
-      'estado': 'Pendiente',
-      'descripcion': 'Cortocircuito en el enchufe de la sala.',
-      'fotos': ''
-    },
-    {
-      'title': 'REPARACIÓN DE TUBERÍAS',
-      'cliente': 'Pedro Salas',
-      'categoria': 'Fontanero',
-      'distrito': 'San Juan de Lurigancho',
-      'direccion': 'Jr. Unión 789',
-      'estado': 'Rechazado',
-      'descripcion': 'Tubería rota en el baño, necesita reemplazo.',
-      'fotos': ''
-    },
-    {
-      'title': 'CAMBIO DE CERRADURA',
-      'cliente': 'Marta Diaz',
-      'categoria': 'Cerrajero',
-      'distrito': 'La Molina',
-      'direccion': 'Av. Sol 101',
-      'estado': 'Aceptado',
-      'descripcion': 'Cambio de cerradura de la puerta principal.',
-      'fotos': ''
-    },
-    {
-      'title': 'INSTALACIÓN DE LUZ',
-      'cliente': 'Roberto Pérez',
-      'categoria': 'Electricista',
-      'distrito': 'Ate',
-      'direccion': 'Av. Principal 202',
-      'estado': 'Aceptado',
-      'descripcion': 'Instalación de nueva luminaria en el techo.',
-      'fotos': ''
-    },
-    {
-      'title': 'DESATORO DE CAÑERÍAS',
-      'cliente': 'Sofía Linares',
-      'categoria': 'Fontanero',
-      'distrito': 'Chorrillos',
-      'direccion': 'Calle Mar 303',
-      'estado': 'Pendiente',
-      'descripcion': 'Cañería de lavadero obstruida, no drena.',
-      'fotos': ''
-    },
-    {
-      'title': 'DUPLICADO DE LLAVES',
-      'cliente': 'Fernando Castro',
-      'categoria': 'Cerrajero',
-      'distrito': 'Barranco',
-      'direccion': 'Jr. Luna 404',
-      'estado': 'Pendiente',
-      'descripcion': 'Necesito duplicado de una llave antigua.',
-      'fotos': ''
-    },
-  ];
-
-  List<Map<String, String>> get _filteredRequests {
-    return _allRequests.where((request) {
-      final matchesEstado = (_selectedEstado == 'Todas' || request['estado'] == _selectedEstado);
-      final matchesCategoria = (_selectedCategoria == 'Todas' || request['categoria'] == _selectedCategoria);
-      return matchesEstado && matchesCategoria;
-    }).toList();
+  @override
+  void initState() {
+    super.initState();
+    context.read<ProfileBloc>().add(ProfileGetEvent());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: const Custombottomnavigationbartecnico(currentIndex: 1),
-      appBar: AppBar(
-        title: const Text(
-          'MIS SOLICITUDES',
-          style: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF424242),
-            fontFamily: 'PatuaOne',
-          ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => SolicitudBloc()),
+        BlocProvider(create: (context) => TecnicoBloc()),
+      ],
+      child: Scaffold(
+        bottomNavigationBar: const Custombottomnavigationbartecnico(
+          currentIndex: 1,
         ),
-        centerTitle: true,
-      ),
-      backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          const SizedBox(height: 30),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              PopupMenuButton<String>(
-                initialValue: _selectedEstado,
-                onSelected: (String value) {
-                  setState(() {
-                    _selectedEstado = value;
-                  });
-                },
-                color: const Color(0xFFE0F2F7),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+        appBar: AppBar(
+          title: const Text(
+            'MIS SOLICITUDES',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF424242),
+              fontFamily: 'PatuaOne',
+            ),
+          ),
+          centerTitle: true,
+        ),
+        backgroundColor: Colors.white,
+        body: Column(
+          children: [
+            const SizedBox(height: 30),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildFilterButton(
+                  'Estado',
+                  _selectedEstado,
+                  ['Todas', 'pendiente', 'aceptado', 'rechazado', 'Finalizado'],
+                  (value) {
+                    setState(() {
+                      _selectedEstado = value;
+                      _filterRequests(context);
+                    });
+                  },
                 ),
-                itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                  const PopupMenuItem<String>(
-                    value: 'Todas',
-                    child: Text('Todas', style: TextStyle(color: Color(0xFF424242))),
-                  ),
-                  const PopupMenuItem<String>(
-                    value: 'Pendiente',
-                    child: Text('Pendiente', style: TextStyle(color: Color(0xFF424242))),
-                  ),
-                  const PopupMenuItem<String>(
-                    value: 'Aceptado',
-                    child: Text('Aceptado', style: TextStyle(color: Color(0xFF424242))),
-                  ),
-                  const PopupMenuItem<String>(
-                    value: 'Rechazado',
-                    child: Text('Rechazado', style: TextStyle(color: Color(0xFF424242))),
-                  ),
-                ],
-                child: ElevatedButton(
-                  onPressed: null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 30,
-                      vertical: 12,
-                    ),
-                    elevation: 3,
-                    enabledMouseCursor: MaterialStateMouseCursor.clickable,
-                  ),
-                  child: const Text(
-                    'Estado',
-                    style: TextStyle(fontSize: 16),
-                  ),
+                const SizedBox(width: 20),
+                BlocBuilder<TecnicoBloc, TecnicoState>(
+                  builder: (context, tecnicoState) {
+                    List<String> categorias = ['Todas'];
+                    if (tecnicoState is TecnicoLoaded) {
+                      categorias.addAll(
+                        tecnicoState.tecnico.categorias.map((c) => c.nombre!),
+                      );
+                    }
+                    return _buildFilterButton(
+                      'Categoría',
+                      _selectedCategoria,
+                      categorias,
+                      (value) {
+                        setState(() {
+                          _selectedCategoria = value;
+                          _filterRequests(context);
+                        });
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 30),
+            Expanded(
+              child: BlocListener<ProfileBloc, ProfileState>(
+                listener: (context, profileState) {
+                  if (profileState is ProfileLoaded &&
+                      profileState.user != null) {
+                    final tecnicoId = profileState.user!.id!;
+                    print('Profile Loaded for Tecnico - User ID: $tecnicoId');
+
+                    // Solicitudes del técnico
+                    context.read<SolicitudBloc>().add(
+                      GetSolicitudesByTecnicoEvent(tecnicoId),
+                    );
+
+                    context.read<TecnicoBloc>().add(
+                      GetTecnicoByIdEvent(tecnicoId),
+                    );
+                  } else if (profileState is ProfileError) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Error al cargar los datos del técnico para sus solicitudes.',
+                        ),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                },
+                child: BlocBuilder<SolicitudBloc, SolicitudState>(
+                  builder: (context, solicitudState) {
+                    if (solicitudState is SolicitudesByTecnicoLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (solicitudState is SolicitudesByTecnicoLoaded) {
+                      final List<SolicitudModel> filteredRequests =
+                          _filterSolicitudes(solicitudState.solicitudes);
+
+                      if (filteredRequests.isEmpty) {
+                        return const Center(
+                          child: Text(
+                            'No tienes solicitudes asignadas con los filtros seleccionados.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 16, color: Colors.grey),
+                          ),
+                        );
+                      }
+                      return ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        itemCount: filteredRequests.length,
+                        itemBuilder: (context, index) {
+                          final SolicitudModel request =
+                              filteredRequests[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 20.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                if (request.estado.toLowerCase() ==
+                                    'pendiente') {
+                                  context.pushNamed(
+                                    '/Rdetails',
+                                    extra: request,
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Esta solicitud está ${request.estado} y no se puede ver el detalle.',
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
+                              child: _buildRequestCard(request),
+                            ),
+                          );
+                        },
+                      );
+                    } else if (solicitudState is SolicitudError) {
+                      return const Center(
+                        child: Text(
+                          'Error al cargar solicitudes del técnico.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.red, fontSize: 16),
+                        ),
+                      );
+                    }
+                    return const Center(
+                      child: Text('Cargando solicitudes del técnico...'),
+                    );
+                  },
                 ),
               ),
-              const SizedBox(width: 20),
-              PopupMenuButton<String>(
-                initialValue: _selectedCategoria,
-                onSelected: (String value) {
-                  setState(() {
-                    _selectedCategoria = value;
-                  });
-                },
-                color: const Color(0xFFE0F2F7),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFilterButton(
+    String label,
+    String selectedValue,
+    List<String> items,
+    ValueChanged<String> onSelected,
+  ) {
+    return PopupMenuButton<String>(
+      initialValue: selectedValue,
+      onSelected: onSelected,
+      color: const Color(0xFFE0F2F7),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      itemBuilder:
+          (BuildContext context) =>
+              items
+                  .map(
+                    (item) => PopupMenuItem<String>(
+                      value: item,
+                      child: Text(
+                        item,
+                        style: const TextStyle(color: Color(0xFF424242)),
+                      ),
+                    ),
+                  )
+                  .toList(),
+      child: ElevatedButton(
+        onPressed: null,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+          elevation: 3,
+          enabledMouseCursor: MaterialStateMouseCursor.clickable,
+        ),
+        child: Text(label, style: const TextStyle(fontSize: 16)),
+      ),
+    );
+  }
+
+  Widget _buildRequestCard(SolicitudModel request) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20.0),
+      decoration: BoxDecoration(
+        color: const Color(0xFFE0F2F7),
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  request.titulo,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF424242),
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
-                itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                  const PopupMenuItem<String>(
-                    value: 'Todas',
-                    child: Text('Todas', style: TextStyle(color: Color(0xFF424242))),
-                  ),
-                  const PopupMenuItem<String>(
-                    value: 'Cerrajero',
-                    child: Text('Cerrajero', style: TextStyle(color: Color(0xFF424242))),
-                  ),
-                  const PopupMenuItem<String>(
-                    value: 'Electricista',
-                    child: Text('Electricista', style: TextStyle(color: Color(0xFF424242))),
-                  ),
-                  const PopupMenuItem<String>(
-                    value: 'Fontanero',
-                    child: Text('Fontanero', style: TextStyle(color: Color(0xFF424242))),
-                  ),
-                ],
-                child: ElevatedButton(
-                  onPressed: null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary, // Manteniendo AppColors.primary para ambos
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+              ),
+              GestureDetector(
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Acción para solicitud: ${request.titulo}'),
                     ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 30,
-                      vertical: 12,
-                    ),
-                    elevation: 3,
-                    enabledMouseCursor: MaterialStateMouseCursor.clickable,
-                  ),
-                  child: const Text(
-                    'Categoría',
-                    style: TextStyle(fontSize: 16),
-                  ),
+                  );
+                },
+                child: const Icon(
+                  Icons.more_vert,
+                  color: Color(0xFF424242),
+                  size: 24,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 30),
-          Expanded(
-            child: _filteredRequests.isEmpty
-                ? const Center(
-                    child: Text(
-                      'No hay solicitudes para mostrar con los filtros seleccionados.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
-                    ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    itemCount: _filteredRequests.length,
-                    itemBuilder: (context, index) {
-                      final request = _filteredRequests[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 20.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            if (request['estado'] == 'Pendiente') {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => RequestDetails(requestData: request),
-                                ),
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Esta solicitud está ${request['estado']} y no se puede ver el detalle.')),
-                              );
-                            }
-                          },
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(20.0),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFE0F2F7),
-                              borderRadius: BorderRadius.circular(15),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.3),
-                                  spreadRadius: 2,
-                                  blurRadius: 5,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      request['title']!,
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFF424242),
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(content: Text('Eliminar solicitud: ${request['title']}')),
-                                        );
-                                      },
-                                      child: const Icon(
-                                        Icons.close,
-                                        color: Colors.red,
-                                        size: 24,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const Divider(height: 20, thickness: 1, color: Colors.grey),
-                                _buildInfoRow('Cliente:', request['cliente']!),
-                                _buildInfoRow('Categoría:', request['categoria']!),
-                                _buildInfoRow('Distrito:', request['distrito']!),
-                                _buildInfoRow('Dirección:', request['direccion']!),
-                                _buildInfoRow('Estado:', request['estado']!),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-          ),
+          const Divider(height: 20, thickness: 1, color: Colors.grey),
+          _buildInfoRow('Cliente:', request.cliente.firstName ?? 'N/A'),
+          _buildInfoRow('Categoría:', request.categoria.nombre ?? 'N/A'),
+          _buildInfoRow('Dirección:', request.direccion),
+          _buildInfoRow('Estado:', request.estado),
         ],
       ),
     );
@@ -340,13 +304,31 @@ class _RequestViewTecnicoState extends State<RequestViewTecnico> {
           children: [
             TextSpan(
               text: value,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
         ),
       ),
     );
+  }
+
+  List<SolicitudModel> _filterSolicitudes(List<SolicitudModel> solicitudes) {
+    return solicitudes.where((request) {
+      final matchesEstado =
+          (_selectedEstado == 'Todas' || request.estado == _selectedEstado);
+      final matchesCategoria =
+          (_selectedCategoria == 'Todas' ||
+              request.categoria.nombre == _selectedCategoria);
+      return matchesEstado && matchesCategoria;
+    }).toList();
+  }
+
+  void _filterRequests(BuildContext context) {
+    final profileState = context.read<ProfileBloc>().state;
+    if (profileState is ProfileLoaded && profileState.user != null) {
+      context.read<SolicitudBloc>().add(
+        GetSolicitudesByTecnicoEvent(profileState.user!.id!),
+      );
+    }
   }
 }

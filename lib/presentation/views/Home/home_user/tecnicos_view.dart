@@ -29,24 +29,24 @@ class _TecnicosViewState extends State<TecnicosView> {
 
   void _loadTecnicos() {
     context.read<TecnicoBloc>().add(
-          LoadTecnicosByCategoryAndDistrict(
-            categoryName: widget.categoria,
-            districtName: distritoSeleccionado,
-          ),
-        );
+      LoadTecnicosByCategoryAndDistrict(
+        categoryName: widget.categoria,
+        districtName: distritoSeleccionado,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    print('Id de la categoria seleccionado: ${widget.categoryId}');
+    const String baseUrl = 'https://res.cloudinary.com/delww5upv/'; 
+
     return Scaffold(
-      bottomNavigationBar: const CustomBottomNaviationBar(currentIndex: 1),
+      bottomNavigationBar: const CustomBottomNaviationBar(currentIndex: 0),
       appBar: AppBar(
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(widget.categoria.toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold)),
-            // Text('Técnicos de ${widget.categoria} (ID: ${widget.categoryId})'),
             BlocBuilder<DistrictCubit, DistrictState>(
               builder: (context, state) {
                 if (state is DistrictLoaded) {
@@ -83,12 +83,12 @@ class _TecnicosViewState extends State<TecnicosView> {
                     setState(() {
                       distritoSeleccionado = value;
                     });
-                    _loadTecnicos(); // Recarga los técnicos al cambiar el distrito
+                    _loadTecnicos();
                   },
                   itemBuilder: (context) {
                     return [
                       const PopupMenuItem(
-                        value: null, // Opción para "Todos los distritos"
+                        value: null,
                         child: Text('Todos los distritos'),
                       ),
                       ...distritos.map((d) {
@@ -145,17 +145,22 @@ class _TecnicosViewState extends State<TecnicosView> {
                   final tecnico = tecnicos[index];
                   final nombre = tecnico.usuario.username ?? 'Nombre Desconocido';
                   final rating = tecnico.calificacion ?? 0;
-                  // final imagen = tecnico.usuario.imagen ?? 'https://via.placeholder.com/100'; 
+                  
+                  String imagen = tecnico.fotoPerfil ?? '';
+                  if (!imagen.startsWith('http')) {
+                    imagen = '$baseUrl$imagen';
+                  }
 
                   return InkWell(
                     onTap: () {
-                      context.pushNamed('/DetallesTecnico', 
-                      extra: {
-                        'tecnico': tecnico,
-                        'categoria': widget.categoria,
-                        'distrito': distritoSeleccionado,
-                        'id': widget.categoryId,
-                      });
+                      context.pushNamed('/DetallesTecnico',
+                        extra: {
+                          'tecnico': tecnico,
+                          'categoria': widget.categoria,
+                          'distrito': distritoSeleccionado,
+                          'id': widget.categoryId,
+                        },
+                      );
                     },
                     borderRadius: BorderRadius.circular(16),
                     child: Column(
@@ -172,15 +177,16 @@ class _TecnicosViewState extends State<TecnicosView> {
                               )
                             ],
                           ),
-                          // child: ClipRRect(
-                          //   borderRadius: BorderRadius.circular(16),
-                          //   child: Image.network(
-                          //     imagen,
-                          //     width: 100,
-                          //     height: 100,
-                          //     fit: BoxFit.cover,
-                          //   ),
-                          // ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: Image.network(
+                              imagen,
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image, size: 100),
+                            ),
+                          ),
                         ),
                         const SizedBox(height: 8),
                         Text(
@@ -205,8 +211,8 @@ class _TecnicosViewState extends State<TecnicosView> {
                 },
               );
             } else if (state is TecnicoError) {
-              return Center(
-                child: Text('Error al cargar técnicos: "Desconocido"}'),
+              return const Center(
+                child: Text('Error al cargar técnicos.'),
               );
             }
             return const Center(

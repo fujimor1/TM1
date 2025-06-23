@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter_bloc/flutter_bloc.dart'; 
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tm1/presentation/bloc/solicitud/bloc/solicitud_bloc.dart';
 import 'package:tm1/presentation/widgets/Widgets.dart';
-import 'package:tm1/presentation/bloc/Profile/bloc/profile_bloc.dart'; 
+import 'package:tm1/presentation/bloc/Profile/bloc/profile_bloc.dart';
 import 'package:tm1/data/model/solicitud/solicitud_model.dart';
 
 class RequestView extends StatefulWidget {
@@ -16,20 +16,6 @@ class RequestView extends StatefulWidget {
 }
 
 class _RequestViewState extends State<RequestView> {
-  // Eliminamos la lista mockeada
-  // List<Map<String, String>> solicitudes = [
-  //   {'titulo': 'LLAVE ATORADA', 'estado': 'Pendiente'},
-  //   {'titulo': 'TUBERÍA ROTA DE BAÑO', 'estado': 'Aceptado'},
-  //   {'titulo': 'TUBERÍA ROTA DE BAÑO', 'estado': 'Rechazado'},
-  // ];
-
-  // No necesitamos este método aquí ahora, la eliminación se manejará en el BLoC/API
-  // void eliminarSolicitud(int index) {
-  //   setState(() {
-  //     solicitudes.removeAt(index);
-  //   });
-  // }
-
   @override
   void initState() {
     super.initState();
@@ -39,9 +25,7 @@ class _RequestViewState extends State<RequestView> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => SolicitudBloc()),
-      ],
+      providers: [BlocProvider(create: (context) => SolicitudBloc())],
       child: Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -60,11 +44,15 @@ class _RequestViewState extends State<RequestView> {
             listener: (context, profileState) {
               if (profileState is ProfileLoaded && profileState.user != null) {
                 print('Profile Loaded - User ID: ${profileState.user!.id}');
-                context.read<SolicitudBloc>().add(GetSolicitudesByClientEvent(profileState.user!.id!));
+                context.read<SolicitudBloc>().add(
+                  GetSolicitudesByClientEvent(profileState.user!.id!),
+                );
               } else if (profileState is ProfileError) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('Error al cargar los datos del usuario para sus solicitudes.'),
+                    content: Text(
+                      'Error al cargar los datos del usuario para sus solicitudes.',
+                    ),
                     backgroundColor: Colors.red,
                   ),
                 );
@@ -76,35 +64,34 @@ class _RequestViewState extends State<RequestView> {
                   return const Center(child: CircularProgressIndicator());
                 } else if (solicitudState is SolicitudesByClientLoaded) {
                   if (solicitudState.solicitudes.isEmpty) {
-                    // Si no hay solicitudes
                     return const Center(
-                      child: Text('No tienes solicitudes registradas.', style: TextStyle(fontSize: 16)),
+                      child: Text(
+                        'No tienes solicitudes registradas.',
+                        style: TextStyle(fontSize: 16),
+                      ),
                     );
                   }
-                  // Si hay solicitudes, las mostramos en una lista
                   return ListView.builder(
                     itemCount: solicitudState.solicitudes.length,
                     itemBuilder: (context, index) {
-                      final SolicitudModel solicitud = solicitudState.solicitudes[index];
-                      // Asegúrate de que los nombres de los campos coincidan con tu SolicitudModel
+                      final SolicitudModel solicitud =
+                          solicitudState.solicitudes[index];
                       final String estado = solicitud.estado;
                       final String titulo = solicitud.titulo;
-
-                      // TODO: Implementar la lógica para eliminar solicitud a través del BLoC/API si es necesario.
-                      // Por ahora, el botón onClose no tendrá funcionalidad real de eliminación.
                       return SolicitudCard(
                         onClose: () {
-                          // Aquí podrías disparar un evento como DeleteSolicitudEvent(solicitud.id)
-                          // y luego recargar la lista o manejar la eliminación localmente.
-                          // Por ahora, solo logueamos que se intentó cerrar.
-                          print('Intentando eliminar solicitud: ${solicitud.id}');
+                          print(
+                            'Intentando eliminar solicitud: ${solicitud.id}',
+                          );
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               titulo,
-                              style: const TextStyle(fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             const SizedBox(height: 6),
                             RichText(
@@ -114,31 +101,27 @@ class _RequestViewState extends State<RequestView> {
                                   const TextSpan(text: 'Estado: '),
                                   TextSpan(
                                     text: estado,
-                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
-                            // Mostrar contactos y botón FINALIZADO solo si el estado es 'Aceptado'
-                            if (estado == 'ACEPTADO') ...[ // Usar "ACEPTADO" en mayúsculas si tu backend lo devuelve así
+                            if (estado == 'ACEPTADO') ...[
                               const SizedBox(height: 12),
                               Row(
                                 children: [
-                                  // Asumiendo que SolicitudModel tiene un técnico con número/email
-                                  // O podrías buscar el número/email del técnico desde tu API
-                                  // y pasarlo aquí. Por ahora, solo son placeholders.
                                   _buildContactButton(
                                     icon: FontAwesomeIcons.whatsapp,
                                     text: 'Contactar WhatsApp',
                                     color: Colors.green,
-                                    // onPressed: () => launchUrl('whatsapp://send?phone=${solicitud.tecnico?.telefono ?? ''}'),
                                   ),
                                   const SizedBox(width: 12),
                                   _buildContactButton(
                                     icon: FontAwesomeIcons.solidEnvelope,
                                     text: 'Contactar Email',
                                     color: Colors.red,
-                                    // onPressed: () => launchUrl('mailto:${solicitud.tecnico?.email ?? ''}'),
                                   ),
                                 ],
                               ),
@@ -152,8 +135,9 @@ class _RequestViewState extends State<RequestView> {
                                     ),
                                   ),
                                   onPressed: () {
-                                    // Aquí podrías disparar un evento para marcar la solicitud como "FINALIZADA"
-                                    print('Marcando solicitud ${solicitud.id} como FINALIZADA');
+                                    print(
+                                      'Marcando solicitud ${solicitud.id} como FINALIZADA',
+                                    );
                                   },
                                   child: const Text(
                                     'FINALIZADO',
@@ -162,15 +146,12 @@ class _RequestViewState extends State<RequestView> {
                                 ),
                               ),
                             ],
-                            // Puedes añadir más condiciones para otros estados (PENDIENTE, RECHAZADO)
-                            // Por ejemplo, si está 'PENDIENTE', quizás no mostrar botones de contacto.
                           ],
                         ),
                       );
                     },
                   );
                 } else if (solicitudState is SolicitudError) {
-                  // Muestra un mensaje de error si algo sale mal
                   return Center(
                     child: Text(
                       'Error al cargar solicitudes: ',
@@ -189,7 +170,6 @@ class _RequestViewState extends State<RequestView> {
     );
   }
 
-  // Helper para construir los botones de contacto (opcional)
   Widget _buildContactButton({
     required IconData icon,
     required String text,
@@ -202,7 +182,7 @@ class _RequestViewState extends State<RequestView> {
         color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(10),
       ),
-      child: GestureDetector( // Usar GestureDetector para el onPressed
+      child: GestureDetector(
         onTap: onPressed,
         child: Row(
           children: [

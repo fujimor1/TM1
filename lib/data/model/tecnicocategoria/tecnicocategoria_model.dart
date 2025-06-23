@@ -1,16 +1,19 @@
 class TecnicoCategoriaModel {
+  int? id;
   int? tecnico;
   int? categoria;
   String? categoriaNombre;
   String? tecnicoUsername;
 
   TecnicoCategoriaModel(
-      {this.tecnico,
+      {this.id,
+      this.tecnico,
       this.categoria,
       this.categoriaNombre,
       this.tecnicoUsername});
 
   TecnicoCategoriaModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
     tecnico = json['tecnico'];
     categoria = json['categoria'];
     categoriaNombre = json['categoria_nombre'];

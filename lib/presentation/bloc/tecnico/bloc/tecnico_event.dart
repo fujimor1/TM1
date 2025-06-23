@@ -34,3 +34,35 @@ class LoadTecnicosByCategoryAndDistrict extends TecnicoEvent {
   @override
   List<Object> get props => [categoryName, districtName ?? ''];
 }
+
+class UpdateTecnicoProfileEvent extends TecnicoEvent {
+  final int tecnicoId;
+  final Map<String, dynamic> data;
+
+  const UpdateTecnicoProfileEvent(this.tecnicoId, this.data);
+
+  @override
+  List<Object> get props => [tecnicoId, data];
+}
+
+class GetTecnicoByIdEvent extends TecnicoEvent {
+  final int tecnicoId;
+
+  const GetTecnicoByIdEvent(this.tecnicoId);
+
+  @override
+  List<Object> get props => [tecnicoId];
+}
+
+class PatchTecnicoCategoriaEvent extends TecnicoEvent {
+  final Map<String, dynamic> tecnicocategoriaData;
+  final int idTecnicoCategoria;
+  final int tecnicoPrincipalId;
+
+  const PatchTecnicoCategoriaEvent({required this.tecnicocategoriaData, required this.idTecnicoCategoria, required this.tecnicoPrincipalId});
+
+  
+
+  @override
+  List<Object> get props => [tecnicocategoriaData, idTecnicoCategoria, tecnicoPrincipalId];
+}

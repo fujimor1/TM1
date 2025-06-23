@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tm1/config/theme/app_colors.dart';
 import 'package:tm1/data/model/user/user_model.dart';
 import 'package:tm1/presentation/bloc/Profile/bloc/profile_bloc.dart';
-import 'package:tm1/presentation/widgets/Widgets.dart'; 
+import 'package:tm1/presentation/widgets/Widgets.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -13,7 +14,6 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
-
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -34,7 +34,41 @@ class _ProfileViewState extends State<ProfileView> {
     super.dispose();
   }
 
-  void _saveChanges(UserModel currentUser) {
+  Future<void> _showConfirmationDialog(BuildContext context, UserModel currentUser) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text('Confirmar Actualización de Perfil'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('¿Está seguro de que desea guardar los cambios en su perfil?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('No'),
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Sí'),
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                _performSaveChanges(currentUser); 
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _performSaveChanges(UserModel currentUser) {
     final Map<String, dynamic> updatedData = {};
 
     if (_usernameController.text != (currentUser.username ?? '')) {
@@ -54,7 +88,7 @@ class _ProfileViewState extends State<ProfileView> {
 
     if (_currentUserId != null) {
       context.read<ProfileBloc>().add(
-            ProfilePatchEvent(updatedData, _currentUserId!), 
+            ProfilePatchEvent(updatedData, _currentUserId!),
           );
     } else {
       _showMessage('Error: ID de usuario no disponible para actualizar.', Colors.red);
@@ -82,10 +116,17 @@ class _ProfileViewState extends State<ProfileView> {
           'Datos Socio Chambea Ya',
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.teal),
         ),
-        actions: const [
+        actions: [
           Padding(
             padding: EdgeInsets.all(12),
-            child: Icon(Icons.logout, color: Colors.black),
+            child: 
+            // Icon(Icons.logout, color: Colors.black),
+            IconButton(
+              onPressed: (){
+                context.go('/login_screen');
+              },  
+              icon: Icon(Icons.logout, color: Colors.teal,)
+            )
           ),
         ],
         elevation: 0,
@@ -96,23 +137,19 @@ class _ProfileViewState extends State<ProfileView> {
         bloc: profileBloc..add(ProfileGetEvent()),
         listener: (context, state) {
           if (state is ProfileLoaded) {
-            if (state.user != null && (_originalUser == null || _originalUser!.id != state.user!.id)) {
+            if (state.user != null && (_originalUser == null || state.user! != _originalUser!)) {
               _usernameController.text = state.user!.username ?? '';
               _phoneController.text = state.user!.telefono ?? '';
               _emailController.text = state.user!.correo ?? '';
               _currentUserId = state.user!.id;
-              _originalUser = state.user; 
-            }
-
-            if (_originalUser != null && state.user!.id == _originalUser!.id &&
-                (state.user!.username != _originalUser!.username ||
-                 state.user!.telefono != _originalUser!.telefono ||
-                 state.user!.correo != _originalUser!.correo)) {
-              _showMessage('¡Perfil actualizado con éxito!', Colors.green);
+            
+              if (_originalUser != null && state.user!.id == _originalUser!.id) {
+                 _showMessage('¡Perfil actualizado con éxito!', Colors.green);
+              }
               _originalUser = state.user; 
             }
           } else if (state is ProfileError) {
-            _showMessage('Error al cargar o actualizar el perfil: ', Colors.red);
+            _showMessage('Error al cargar o actualizar el perfil.', Colors.red);
           }
         },
         builder: (context, state) {
@@ -125,10 +162,10 @@ class _ProfileViewState extends State<ProfileView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Ha ocurrido un error al cargar el perfil: '),
+                  const Text('Ha ocurrido un error al cargar el perfil.'),
                   ElevatedButton(
                     onPressed: () {
-                      profileBloc.add(ProfileGetEvent()); 
+                      profileBloc.add(ProfileGetEvent());
                     },
                     child: const Text('Reintentar'),
                   ),
@@ -194,15 +231,15 @@ class _ProfileViewState extends State<ProfileView> {
                     controller: _usernameController,
                     keyboardType: TextInputType.text,
                   ),
-                  CampoEditable(
-                    label: 'Teléfono de contacto',
-                    controller: _phoneController,
-                    keyboardType: TextInputType.phone, 
-                  ),
+                  // CampoEditable(
+                  //   label: 'Teléfono de contacto',
+                  //   controller: _phoneController,
+                  //   keyboardType: TextInputType.phone,
+                  // ),
                   CampoEditable(
                     label: 'Correo electrónico',
                     controller: _emailController,
-                    keyboardType: TextInputType.emailAddress, 
+                    keyboardType: TextInputType.emailAddress,
                   ),
                   const SizedBox(height: 28),
                   Center(
@@ -218,7 +255,7 @@ class _ProfileViewState extends State<ProfileView> {
                         ),
                       ),
                       onPressed: () {
-                        _saveChanges(user);
+                        _showConfirmationDialog(context, user);
                       },
                       child: const Text(
                         'Guardar Datos',

@@ -28,4 +28,34 @@ final class SolicitudesByClientLoaded extends SolicitudState {
   List<Object> get props => [solicitudes];
 }
 
+final class SolicitudesByTecnicoLoading extends SolicitudState {}
+
+final class SolicitudesByTecnicoLoaded extends SolicitudState {
+  final List<SolicitudModel> solicitudes;
+
+  const SolicitudesByTecnicoLoaded(this.solicitudes);
+
+  @override
+  List<Object> get props => [solicitudes];
+}
+
+final class SolicitudPhotosUploading extends SolicitudState {}
+final class SolicitudPhotosLoaded extends SolicitudState {
+  final List<FotoSolicitudModel> fotos;
+  const SolicitudPhotosLoaded(this.fotos);
+  @override
+  List<Object> get props => [fotos];
+}
+
+final class SolicitudUpdating extends SolicitudState {}
+
+final class SolicitudUpdateSuccess extends SolicitudState {
+  final SolicitudModel solicitudActualizada;
+  const SolicitudUpdateSuccess(this.solicitudActualizada);
+
+  @override
+  List<Object> get props => [solicitudActualizada];
+}
+
+
 final class SolicitudError extends SolicitudState {}

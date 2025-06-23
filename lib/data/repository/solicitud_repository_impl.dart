@@ -15,4 +15,12 @@ class SolicitudRepositoryImpl implements SolicitudRepository{
   Future<List<SolicitudModel>> getSolicitudesByClientId(int clientId) {
     return datasource.getSolicitudesByClientId(clientId);
   }
+  @override
+  Future<List<SolicitudModel>> getSolicitudesByTecnicoId(int tecnicoId) {
+    return datasource.getSolicitudesByTecnicoId(tecnicoId);
+  }
+  @override
+  Future<SolicitudModel> updateSolicitud(int solicitudId, Map<String, dynamic> data) {
+    return datasource.updateSolicitud(solicitudId, data);
+  }
 }

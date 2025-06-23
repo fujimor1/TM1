@@ -16,4 +16,17 @@ class TecnicoRepositoryImpl implements TecnicoRepository{
   Future<List<TecnicoModel>> getTecnicos({String? categoryName, String? districtName}) async {
     return await datasource.getTecnicos(categoryName: categoryName, districtName: districtName);
   }
+
+  @override
+  Future<TecnicoModel> updateTecnicoProfile(int tecnicoId, Map<String, dynamic> data) async {
+    return await datasource.updateTecnicoProfile(tecnicoId, data);
+  }
+  @override
+  Future<TecnicoModel> getTecnicoById(int tecnicoId) async {
+    return await datasource.getTecnicoById(tecnicoId);
+  }
+  @override
+  Future<Map<String, dynamic>> createSubscriptionPreference(int tecnicoId) {
+    return datasource.createSubscriptionPreference(tecnicoId);
+  }
 }

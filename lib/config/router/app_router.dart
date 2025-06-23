@@ -1,5 +1,6 @@
 // import 'package:flutter/material.dart';s
 import 'package:go_router/go_router.dart';
+import 'package:tm1/data/model/solicitud/solicitud_model.dart';
 import 'package:tm1/data/model/tecnico/tecnico_model.dart';
 import 'package:tm1/presentation/screens/Category/category_screen.dart';
 import 'package:tm1/presentation/screens/Register/register_screen.dart';
@@ -20,6 +21,7 @@ import 'package:tm1/presentation/views/Profile/Profiletecnico/profile_view_tecni
 import 'package:tm1/presentation/views/Register/register_tecnico.dart';
 import 'package:tm1/presentation/views/Register/register_tecnico_second.dart';
 import 'package:tm1/presentation/views/Register/register_user.dart';
+import 'package:tm1/presentation/views/Request/RequestTecnico/request_details.dart';
 import 'package:tm1/presentation/views/Request/RequestTecnico/request_view_tecnico.dart';
 
 final appRouter = GoRouter(
@@ -51,15 +53,23 @@ final appRouter = GoRouter(
       builder: (context, state) => const RequestViewTecnico(),
     ),
     GoRoute(
+      path: '/Rdetails',
+      name: RequestDetails.name,
+      builder: (context, state) {
+        final solicitud = state.extra as SolicitudModel;
+        return RequestDetails(requestData: solicitud);
+      },
+    ),
+    GoRoute(
       path: '/Register',
       name: RegisterScreen.name,
       builder: (context, state) => const RegisterScreen(),
     ),
-    GoRoute(
-      path: '/Pcard',
-      name: SubscriptionView.name,
-      builder: (context, state) => const SubscriptionView(),
-    ),
+    // GoRoute(
+    //   path: '/Pcard',
+    //   name: SubscriptionView.name,
+    //   builder: (context, state) => const SubscriptionView(),
+    // ),
     GoRoute(
       path: '/HVtecnico',
       name: HomeViewTecnico.name,
@@ -83,7 +93,21 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/Cprofile',
       name: CategoryProfileEdit.name,
-      builder: (context, state) => const CategoryProfileEdit(),
+      builder: (context, state) {
+        final args = state.extra as Map<String, dynamic>;
+
+        // 2. Luego, accede a cada valor DENTRO del mapa por su clave.
+        // Y ahora sí, convierte cada valor individual a 'int'.
+        final tecnicoId = args['tecnicoId'] as int;
+        final categoriaId = args['categoriaId'] as int;
+        // final tecnicoId = state.extra as int;
+        // final categoriaId = state.extra as int;
+
+        return CategoryProfileEdit(
+          tecnicoId: tecnicoId,
+          categoriaId: categoriaId,
+        );
+      },
     ),
     GoRoute(
       path: '/RUser',
@@ -120,7 +144,8 @@ final appRouter = GoRouter(
       name: TecnicosView.name,
       builder: (context, state) {
         final Map<String, dynamic>? data = state.extra as Map<String, dynamic>?;
-        final String nombreCategoria = data?['categoria'] as String? ?? 'Desconocida';
+        final String nombreCategoria =
+            data?['categoria'] as String? ?? 'Desconocida';
         final int idCategoria = data?['id'] as int? ?? 0;
 
         return TecnicosView(
@@ -136,8 +161,10 @@ final appRouter = GoRouter(
       builder: (context, state) {
         final data = state.extra as Map<String, dynamic>;
         final tecnico = data['tecnico'] as TecnicoModel;
-        final categoria = data['categoria'] as String? ?? 'Distrito no especificado';
-        final distrito = data['distrito'] as String? ?? 'Distrito no especificado';
+        final categoria =
+            data['categoria'] as String? ?? 'Distrito no especificado';
+        final distrito =
+            data['distrito'] as String? ?? 'Distrito no especificado';
         final categoryId = data['id'] as int;
 
         return DetalleTecnicoView(
@@ -159,7 +186,12 @@ final appRouter = GoRouter(
         final categoryId = data['categoryId'] as int;
         final tecnicoId = data['tecnicoId'] as int;
 
-        return SolicitudServicioView(categoria: categoria, distrito: distrito, categoryId:categoryId, tecnicoId:tecnicoId);
+        return SolicitudServicioView(
+          categoria: categoria,
+          distrito: distrito,
+          categoryId: categoryId,
+          tecnicoId: tecnicoId,
+        );
       },
     ),
   ],

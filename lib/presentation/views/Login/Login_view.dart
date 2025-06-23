@@ -101,7 +101,7 @@ class _LoginViewState extends State<LoginView> {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(content: Text('¡Inicio de sesión exitoso!')),
                                   );
-                                  context.go('/Home'); 
+                                  context.go('/Paymment'); 
                                 } else if (state is LoginError) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(content: Text('Error al iniciar sesión. Por favor, verifica tus credenciales o inténtalo más tarde.')),

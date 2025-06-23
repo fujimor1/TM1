@@ -47,6 +47,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
       if (user == null){
         emit(ProfileError());
+      } else {
+        emit(ProfileLoaded(user));
       }
     } catch (e) {
       print('Error en ProfileBloc (ProfilePatch): ${e.toString()}');

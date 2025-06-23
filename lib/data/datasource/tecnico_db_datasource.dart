@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:tm1/config/dio/dio_client.dart';
 import 'package:tm1/data/model/tecnico/tecnico_model.dart';
 import 'package:tm1/domain/datasource/tecnico_datasource.dart';
@@ -27,31 +30,23 @@ class TecnicoDbDatasource implements TecnicoDatasource{
     final response = await _dioClient.get(endPoint, null, istoken: true);
 
     if (response.statusCode == 200) {
-      //1`
       final List<dynamic> tecnicosJson = response.data;
       List<TecnicoModel> allTecnicos = tecnicosJson.map((json) => TecnicoModel.fromJson(json)).toList();
 
-      // 2. Aplicar el filtrado en el cliente (Flutter)
       List<TecnicoModel> filteredTecnicos = allTecnicos.where((tecnico) {
         bool matchesCategory = true;
-        // Si se especificó un nombre de categoría para filtrar
         if (categoryName != null && categoryName.isNotEmpty) {
-          // Comprueba si alguna de las categorías del técnico coincide con el nombre
           matchesCategory = tecnico.categorias.any((cat) => 
             cat.nombre != null && cat.nombre!.toLowerCase() == categoryName.toLowerCase()
           );
         }
 
         bool matchesDistrict = true;
-        // Si se especificó un nombre de distrito para filtrar
         if (districtName != null && districtName.isNotEmpty) {
-          // Comprueba si alguno de los distritos del técnico coincide con el nombre
           matchesDistrict = tecnico.distritos.any((dist) => 
             dist.nombre != null && dist.nombre!.toLowerCase() == districtName.toLowerCase()
           );
         }
-        
-        // Un técnico coincide si cumple con los criterios de categoría Y de distrito
         return matchesCategory && matchesDistrict;
       }).toList();
 
@@ -62,5 +57,58 @@ class TecnicoDbDatasource implements TecnicoDatasource{
     } else {
       throw Exception('Error al obtener tecnicos: ${response.statusCode}');
     }
-  } 
+  }
+  
+  @override
+  Future<TecnicoModel> updateTecnicoProfile(int tecnicoId, Map<String, dynamic> data) async {
+    final endPoint = '/tecnicos/$tecnicoId/';
+
+    final response = await _dioClient.patchWithFile(
+      endPoint,
+      data,
+      istoken: true, 
+    );
+
+    if (response.statusCode == 200) {
+      return TecnicoModel.fromJson(response.data);
+    } else {
+      throw Exception('Error al actualizar perfil de técnico: ${response.statusCode} - ${response.data}');
+    }
+  }
+
+  @override
+  Future<TecnicoModel> getTecnicoById(int tecnicoId) async {
+    final endPoint = '/tecnicos/$tecnicoId/';
+    try {
+      final response = await _dioClient.getWithToken(endPoint);
+      
+      if (response.statusCode == 200) {
+        return TecnicoModel.fromJson(response.data);
+      } else {
+        throw Exception('Error al obtener técnico por ID: ${response.statusCode} - ${response.data}');
+      }
+    } on DioException catch (e) {
+      throw Exception('Error de red al obtener técnico por ID: ${e.message}');
+    } catch (e) {
+      throw Exception('Error inesperado al obtener técnico por ID: $e');
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> createSubscriptionPreference(int tecnicoId) async {
+    // El endpoint usa el ID del usuario, que es el mismo que el del técnico.
+    final endPoint = '/usuarios/$tecnicoId/create-subscription-payment/';
+
+    // Hacemos una petición POST. No necesita `data` según tu backend.
+    final response = await _dioClient.post(endPoint, null, istoken: true);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      // Devuelve el mapa con los datos de la preferencia (ID y init_point).
+      return response.data as Map<String, dynamic>;
+    } else {
+      final String errorMessage = response.data.toString();
+      throw Exception('Failed to create Mercado Pago preference: ${response.statusCode} - $errorMessage');
+    }
+  }
+
 }

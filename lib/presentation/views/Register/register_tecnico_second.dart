@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:go_router/go_router.dart'; // Importa go_router para navegación
+import 'package:go_router/go_router.dart';
 import 'package:tm1/config/theme/app_colors.dart';
 import 'package:tm1/presentation/bloc/categories/categories_cubit.dart';
 import 'package:tm1/presentation/bloc/district/district_cubit.dart';
@@ -36,7 +36,7 @@ class _RegisterTecnicoSecondState extends State<RegisterTecnicoSecond> {
     super.initState();
 
     debugPrint(
-      'RegisterTecnicoSecond (RSTecnico) initState - ID recibido: ${widget.id}',
+        'RegisterTecnicoSecond (RSTecnico) initState - ID recibido: ${widget.id}',
     );
 
     context.read<CategoriesCubit>().getCategories();
@@ -107,15 +107,30 @@ class _RegisterTecnicoSecondState extends State<RegisterTecnicoSecond> {
         bloc: tecnicoBloc, // Escucha el TecnicoBloc
         listener: (context, state) {
           if (state is TecnicoLoaded) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Técnico registrado exitosamente!')),
-            );
-            debugPrint('Técnico ID: ${state.tecnico.usuario.id} registrado.');
-            // Navega a la siguiente pantalla (ej. dashboard del técnico)
-            context.go('/login_screen');
+            debugPrint('TecnicoLoaded detectado. ID de técnico: ${state.tecnico.usuario.id}');
+            if (imagenSeleccionada != null) {
+              debugPrint('Disparando UpdateTecnicoProfileEvent con imagen...');
+              tecnicoBloc.add(
+                UpdateTecnicoProfileEvent(
+                  state.tecnico.usuario.id!, 
+                  {'foto_perfil': imagenSeleccionada!},
+                ),
+              );
+
+              setState(() {
+              imagenSeleccionada = null;
+            });
+
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Técnico registrado exitosamente!')),
+              );
+              debugPrint('Técnico ID: ${state.tecnico.usuario.id} registrado.');
+              context.go('/login_screen');
+            }
           } else if (state is TecnicoError) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Error al registrar técnico: }')),
+              SnackBar(content: Text('Error al registrar técnico: ${state.props.first}')),
             );
           }
         },
@@ -145,13 +160,12 @@ class _RegisterTecnicoSecondState extends State<RegisterTecnicoSecond> {
                           return ElevatedButton.icon(
                             onPressed: () async {
                               final List<Map<String, dynamic>>?
-                              seleccionadosTemp = await showDialog<
-                                List<Map<String, dynamic>>
-                              >(
+                                  seleccionadosTemp = await showDialog<
+                                      List<Map<String, dynamic>>>(
                                 context: context,
                                 builder: (context) {
                                   final List<Map<String, dynamic>>
-                                  dialogSelectedData = List.from(
+                                      dialogSelectedData = List.from(
                                     selectedDistrictsData,
                                   );
 
@@ -160,7 +174,6 @@ class _RegisterTecnicoSecondState extends State<RegisterTecnicoSecond> {
                                     content: SizedBox(
                                       width: double.maxFinite,
                                       child: StatefulBuilder(
-                                        // Usamos StatefulBuilder para actualizar el diálogo
                                         builder: (
                                           BuildContext context,
                                           StateSetter setState,
@@ -178,9 +191,9 @@ class _RegisterTecnicoSecondState extends State<RegisterTecnicoSecond> {
                                                       distrito['id'] as int;
                                                   final isSelected =
                                                       dialogSelectedData.any(
-                                                        (element) =>
-                                                            element['id'] == id,
-                                                      );
+                                                    (element) =>
+                                                        element['id'] == id,
+                                                  );
 
                                                   return CheckboxListTile(
                                                     title: Text(nombre),
@@ -194,14 +207,13 @@ class _RegisterTecnicoSecondState extends State<RegisterTecnicoSecond> {
                                                               2) {
                                                             dialogSelectedData
                                                                 .add({
-                                                                  'id': id,
-                                                                  'nombre':
-                                                                      nombre,
-                                                                });
+                                                              'id': id,
+                                                              'nombre': nombre,
+                                                            });
                                                           } else {
                                                             ScaffoldMessenger.of(
-                                                              context,
-                                                            ).showSnackBar(
+                                                                    context)
+                                                                .showSnackBar(
                                                               const SnackBar(
                                                                 content: Text(
                                                                   'Solo puedes seleccionar hasta 2 distritos',
@@ -212,10 +224,10 @@ class _RegisterTecnicoSecondState extends State<RegisterTecnicoSecond> {
                                                         } else {
                                                           dialogSelectedData
                                                               .removeWhere(
-                                                                (element) =>
-                                                                    element['id'] ==
-                                                                    id,
-                                                              );
+                                                            (element) =>
+                                                                element['id'] ==
+                                                                id,
+                                                          );
                                                         }
                                                       });
                                                     },
@@ -227,15 +239,15 @@ class _RegisterTecnicoSecondState extends State<RegisterTecnicoSecond> {
                                     ),
                                     actions: [
                                       TextButton(
-                                        onPressed: () => Navigator.pop(context),
+                                        onPressed: () =>
+                                            Navigator.pop(context),
                                         child: const Text('Cancelar'),
                                       ),
                                       ElevatedButton(
-                                        onPressed:
-                                            () => Navigator.pop(
-                                              context,
-                                              dialogSelectedData,
-                                            ),
+                                        onPressed: () => Navigator.pop(
+                                          context,
+                                          dialogSelectedData,
+                                        ),
                                         child: const Text('Aceptar'),
                                       ),
                                     ],
@@ -274,11 +286,10 @@ class _RegisterTecnicoSecondState extends State<RegisterTecnicoSecond> {
                     onTap: seleccionarImagenDesdeGaleria,
                     child: CircleAvatar(
                       radius: 30,
-                      backgroundImage:
-                          imagenSeleccionada != null
-                              ? FileImage(imagenSeleccionada!)
-                              : const AssetImage('assets/images/Contaco.png')
-                                  as ImageProvider,
+                      backgroundImage: imagenSeleccionada != null
+                          ? FileImage(imagenSeleccionada!)
+                          : const AssetImage('assets/images/Contaco.png')
+                              as ImageProvider,
                       backgroundColor: Colors.grey[200],
                     ),
                   ),
@@ -314,24 +325,22 @@ class _RegisterTecnicoSecondState extends State<RegisterTecnicoSecond> {
                       crossAxisSpacing: 12,
                       childAspectRatio: 2.5,
                       physics: const NeverScrollableScrollPhysics(),
-                      children:
-                          categorias.map<Widget>((cat) {
-                            final nombre = cat['nombre'] ?? 'Sin nombre';
-                            final id = cat['id'] as int;
-                            final isSelected = selectedCategoriesData.any(
-                              (element) => element['id'] == id,
-                            );
+                      children: categorias.map<Widget>((cat) {
+                        final nombre = cat['nombre'] ?? 'Sin nombre';
+                        final id = cat['id'] as int;
+                        final isSelected = selectedCategoriesData.any(
+                          (element) => element['id'] == id,
+                        );
 
-                            return CategoriaSelector(
-                              nombre: nombre,
-                              estaSeleccionado: isSelected,
-                              onTap:
-                                  () => toggleCategoria({
-                                    'id': id,
-                                    'nombre': nombre,
-                                  }),
-                            );
-                          }).toList(),
+                        return CategoriaSelector(
+                          nombre: nombre,
+                          estaSeleccionado: isSelected,
+                          onTap: () => toggleCategoria({
+                            'id': id,
+                            'nombre': nombre,
+                          }),
+                        );
+                      }).toList(),
                     );
                   } else if (state is CategoriesError) {
                     return const Center(
@@ -349,14 +358,12 @@ class _RegisterTecnicoSecondState extends State<RegisterTecnicoSecond> {
                     final usuarioId = int.tryParse(widget.id!);
                     if (usuarioId != null) {
                       // Obtener solo los IDs de las categorías y distritos seleccionados
-                      final List<int> categoryIds =
-                          selectedCategoriesData
-                              .map<int>((data) => data['id'] as int)
-                              .toList();
-                      final List<int> districtIds =
-                          selectedDistrictsData
-                              .map<int>((data) => data['id'] as int)
-                              .toList();
+                      final List<int> categoryIds = selectedCategoriesData
+                          .map<int>((data) => data['id'] as int)
+                          .toList();
+                      final List<int> districtIds = selectedDistrictsData
+                          .map<int>((data) => data['id'] as int)
+                          .toList();
 
                       // Validar que se hayan seleccionado al menos una categoría y un distrito
                       if (categoryIds.isEmpty) {
@@ -384,6 +391,7 @@ class _RegisterTecnicoSecondState extends State<RegisterTecnicoSecond> {
                       tecnicoBloc.add(
                         InsertTecnicoEvent(usuarioId, categoryIds, districtIds),
                       );
+                      // La lógica para la imagen ahora se maneja en el BlocListener
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
