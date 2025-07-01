@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tm1/presentation/views/Paymment/paymment_view.dart';
+import 'package:tm1/presentation/views/Paymment/subscription_view.dart';
 
 class PaymmentScreen extends StatelessWidget {
   const PaymmentScreen({super.key});
@@ -7,6 +7,6 @@ class PaymmentScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PaymmentView();
+    return SubscriptionView();
   }
 }

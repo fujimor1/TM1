@@ -23,7 +23,8 @@ class _RegisterTecnicoState extends State<RegisterTecnico> {
   final TextEditingController _lastNamesController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   final TextEditingController _dniController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -58,14 +59,16 @@ class _RegisterTecnicoState extends State<RegisterTecnico> {
           if (state is RegisterLoading) {
             debugPrint('Estado: RegisterLoading');
           } else if (state is RegisterLoaded) {
-
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Técnico registrado exitosamente!')),
             );
             final userModel = state.userModel;
             debugPrint('Navegando a RSTecnico con ID: ${userModel.id}');
 
-            context.pushNamed(RegisterTecnicoSecond.name, pathParameters: {'id': userModel.id.toString()} );
+            context.pushNamed(
+              RegisterTecnicoSecond.name,
+              pathParameters: {'id': userModel.id.toString()},
+            );
           } else if (state is RegisterError) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -86,21 +89,35 @@ class _RegisterTecnicoState extends State<RegisterTecnico> {
                   label: 'Nombres',
                   hintText: 'Ingresar nombres',
                   controller: _namesController,
-                  validator:
-                      (value) =>
-                          value == null || value.isEmpty
-                              ? 'Por favor ingresa tus nombres'
-                              : null,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingresa tus nombres';
+                    }
+                    if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
+                      return 'El nombre solo puede contener letras';
+                    }
+                    return null;
+                  },
+                  // value == null || value.isEmpty
+                  //     ? 'Por favor ingresa tus nombres'
+                  //     : null,
                 ),
                 CustomTextField(
                   label: 'Apellidos',
                   hintText: 'Ingresar apellidos',
                   controller: _lastNamesController,
-                  validator:
-                      (value) =>
-                          value == null || value.isEmpty
-                              ? 'Por favor ingresa tus apellidos'
-                              : null,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingresa tus nombres';
+                    }
+                    if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
+                      return 'El nombre solo puede contener letras';
+                    }
+                    return null;
+                  },
+                  // value == null || value.isEmpty
+                  //     ? 'Por favor ingresa tus apellidos'
+                  //     : null,
                 ),
                 CustomTextField(
                   label: 'Usuario',
@@ -177,11 +194,15 @@ class _RegisterTecnicoState extends State<RegisterTecnico> {
                 CustomTextField(
                   label: 'Teléfono',
                   hintText: 'Ingresar número de celular',
-                  keyboardType: TextInputType.phone,
+                  keyboardType: TextInputType.number,
                   controller: _phoneController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Por favor ingresa tu número de teléfono';
+                    }
+                    // VALIDACIÓN AÑADIDA: Debe tener exactamente 9 dígitos.
+                    if (!RegExp(r'^[0-9]{9}$').hasMatch(value)) {
+                      return 'El teléfono debe tener 9 dígitos';
                     }
                     return null;
                   },

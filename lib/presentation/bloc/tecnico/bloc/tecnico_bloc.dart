@@ -90,7 +90,7 @@ class TecnicoBloc extends Bloc<TecnicoEvent, TecnicoState> {
       emit(TecnicoLoaded(nuevoTecnico));
     } catch (e) {
       print('Error en TecnicoBloc: $e');
-      emit(TecnicoError());
+      emit(TecnicoError('Error al crear el técnico: ${e.toString()}'));
     }
   }
 
@@ -163,7 +163,7 @@ class TecnicoBloc extends Bloc<TecnicoEvent, TecnicoState> {
       emit(TecnicoLoaded(tecnico));
     } catch (e) {
       print('Error en TecnicoBloc (GetTecnicoByIdEvent): $e');
-      emit(TecnicoError());
+      emit(TecnicoError('Error al crear el técnico: ${e.toString()}'));
     }
   }
 

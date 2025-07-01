@@ -2,13 +2,15 @@ part of 'solicitud_bloc.dart';
 
 sealed class SolicitudState extends Equatable {
   const SolicitudState();
-  
+
   @override
   List<Object> get props => [];
 }
 
 final class SolicitudInitial extends SolicitudState {}
+
 final class SolicitudLoading extends SolicitudState {}
+
 final class SolicitudLoaded extends SolicitudState {
   final SolicitudModel solicitud;
 
@@ -40,6 +42,7 @@ final class SolicitudesByTecnicoLoaded extends SolicitudState {
 }
 
 final class SolicitudPhotosUploading extends SolicitudState {}
+
 final class SolicitudPhotosLoaded extends SolicitudState {
   final List<FotoSolicitudModel> fotos;
   const SolicitudPhotosLoaded(this.fotos);
@@ -56,6 +59,5 @@ final class SolicitudUpdateSuccess extends SolicitudState {
   @override
   List<Object> get props => [solicitudActualizada];
 }
-
 
 final class SolicitudError extends SolicitudState {}

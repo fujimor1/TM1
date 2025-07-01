@@ -13,7 +13,7 @@ class DistritotecnicoDbDatasource implements DistritotecnicoDatasource {
     if (response.statusCode == 200 || response.statusCode == 201) {
       return DistritoTecnicoModel.fromJson(response.data);
     } else {
-      throw Exception('Error al insertar técnico: ${response.statusCode}');
+      throw Exception('Error al insertar técnico-distrito: ${response.statusCode}');
     }
   }
 }

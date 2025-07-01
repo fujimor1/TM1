@@ -26,4 +26,11 @@ final class TecnicosListLoaded extends TecnicoState {
   @override
   List<Object> get props => [tecnicos];
 }
-final class TecnicoError extends TecnicoState {}
+final class TecnicoError extends TecnicoState {
+  final String message;
+
+  const TecnicoError(this.message);
+
+  @override
+  List<Object> get props => [message];
+}

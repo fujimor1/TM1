@@ -95,6 +95,9 @@ class _RegisterUserState extends State<RegisterUser> {
                       if (value == null || value.isEmpty) {
                         return 'Por favor ingresa tus nombres';
                       }
+                      if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
+                        return 'El nombre solo puede contener letras';
+                      }
                       return null;
                     },
                   ),
@@ -105,6 +108,9 @@ class _RegisterUserState extends State<RegisterUser> {
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Por favor ingresa tus apellidos';
+                      }
+                      if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
+                        return 'El nombre solo puede contener letras';
                       }
                       return null;
                     },

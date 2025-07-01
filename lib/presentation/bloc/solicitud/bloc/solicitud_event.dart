@@ -9,10 +9,11 @@ sealed class SolicitudEvent extends Equatable {
 
 class InsertSolicitudEvent extends SolicitudEvent {
   final Map<String, dynamic> solicitud;
+  final List<String> photoPaths;
 
-  const InsertSolicitudEvent(this.solicitud);
+  const InsertSolicitudEvent(this.solicitud, this.photoPaths);
   @override
-  List<Object> get props => [solicitud];
+  List<Object> get props => [solicitud, photoPaths];
 }
 
 class GetSolicitudesByClientEvent extends SolicitudEvent {

@@ -7,7 +7,7 @@ class FotoSolicitudDbDatasource implements FotoSolicitudDatasource{
 
   @override
   Future<List<FotoSolicitudModel>> uploadFotos(int solicitudId, List<String> fotosPaths) async {
-    const endPoint = '/fotos-solicitud/upload/'; 
+    const endPoint = '/fotos-solicitud/'; 
 
     try {
       final response = await _dioClient.postWithFile(
@@ -18,8 +18,28 @@ class FotoSolicitudDbDatasource implements FotoSolicitudDatasource{
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final List<dynamic> data = response.data;
-        return data.map((json) => FotoSolicitudModel.fromJson(json as Map<String, dynamic>)).toList();
+        final dynamic responseData = response.data;
+
+        // Verificamos si la respuesta del servidor es una Lista (para múltiples fotos)
+        if (responseData is List) {
+          return responseData.map((json) => 
+            FotoSolicitudModel.fromJson(json as Map<String, dynamic>)
+          ).toList();
+        } 
+        // Verificamos si la respuesta es un solo objeto/Mapa (para una sola foto)
+        else if (responseData is Map) {
+          final foto = FotoSolicitudModel.fromJson(responseData as Map<String, dynamic>);
+          // Devolvemos una lista que contiene ese único objeto para que coincida
+          // con el tipo de retorno del método Future<List<FotoSolicitudModel>>
+          return [foto];
+        } 
+        // Si no es ni Lista ni Mapa, algo inesperado ocurrió
+        else {
+          throw Exception('Formato de respuesta inesperado del servidor.');
+        }
+        // --- FIN DE LA SOLUCIÓN ---
+        // final List<dynamic> data = response.data;
+        // return data.map((json) => FotoSolicitudModel.fromJson(json as Map<String, dynamic>)).toList();
       } else {
         final String errorMessage = response.data.toString();
         throw Exception('Failed to upload fotos: ${response.statusCode} - $errorMessage');

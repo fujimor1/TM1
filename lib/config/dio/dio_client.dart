@@ -17,7 +17,7 @@ class DioClient {
   static String token = "";
   static Map<String, dynamic>? decodedTokenPayload;
   // final String _baseUrl = "http://10.0.2.2:8000/api";
-  final String _baseUrl = "https://a996-2001-1388-a44-3c5d-8ba9-4f80-a8f2-ec10.ngrok-free.app/api";  
+  final String _baseUrl = "https://9d0f-2001-1388-a44-3c5d-8ba9-4f80-a8f2-ec10.ngrok-free.app/api";  
 
   //LOGIN
   Future<bool> login(String username, String password) async {
@@ -379,7 +379,7 @@ class DioClient {
       if (await File(path).exists()) {
         formData.files.add(
           MapEntry(
-            'fotos',
+            'url_foto',
             await MultipartFile.fromFile(path, filename: path.split('/').last),
           ),
         );

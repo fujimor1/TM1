@@ -37,9 +37,17 @@ class SolicitudBloc extends Bloc<SolicitudEvent, SolicitudState> {
       final nuevaSolicitud = await _solicitudRepository.insertSolicitud(
         event.solicitud,
       );
+      if (event.photoPaths.isNotEmpty) {
+        // Si hay fotos, usa el ID de la solicitud recién creada para subirlas
+        await _fotoSolicitudRepository.uploadFotos(
+          nuevaSolicitud.id,
+          event.photoPaths,
+        );
+      }
       emit(SolicitudLoaded(nuevaSolicitud));
     } catch (e) {
       print('Error al insertar solicitud en Bloc: $e');
+      emit(SolicitudError());
     }
   }
 
@@ -56,6 +64,7 @@ class SolicitudBloc extends Bloc<SolicitudEvent, SolicitudState> {
       emit(SolicitudesByClientLoaded(solicitudes));
     } catch (e) {
       print('Error al obtener solicitudes del cliente en Bloc: $e');
+      emit(SolicitudError());
     }
   }
 
@@ -114,6 +123,7 @@ class SolicitudBloc extends Bloc<SolicitudEvent, SolicitudState> {
       }
     } catch (e) {
       print('Error al actualizar la solicitud en Bloc: $e');
+      emit(SolicitudError());
     }
   }
 

@@ -31,7 +31,7 @@ import 'package:equatable/equatable.dart';
 import 'package:tm1/data/datasource/user_db_datasource.dart';
 import 'package:tm1/data/model/user/user_model.dart';
 import 'package:tm1/data/repository/user_repository_impl.dart';
-import 'package:flutter/foundation.dart'; // Importar para debugPrint
+import 'package:flutter/foundation.dart'; 
 
 part 'register_state.dart';
 
