@@ -18,9 +18,13 @@ part 'tecnico_event.dart';
 part 'tecnico_state.dart';
 
 class TecnicoBloc extends Bloc<TecnicoEvent, TecnicoState> {
-  final TecnicoRepository _tecnicoRepository = TecnicoRepositoryImpl(TecnicoDbDatasource());
-  final TecnicocategoriaRepository _tecnicoCategoriaRepository = TecnicocategoriaRepositoryImpl(TecnicocategoriaDbDatasource());
-  final DistritotecnicoRepository _distritoTecnicoRepository = DistritotecnicoRepositoryImpl(DistritotecnicoDbDatasource());
+  final TecnicoRepository _tecnicoRepository = TecnicoRepositoryImpl(
+    TecnicoDbDatasource(),
+  );
+  final TecnicocategoriaRepository _tecnicoCategoriaRepository =
+      TecnicocategoriaRepositoryImpl(TecnicocategoriaDbDatasource());
+  final DistritotecnicoRepository _distritoTecnicoRepository =
+      DistritotecnicoRepositoryImpl(DistritotecnicoDbDatasource());
   TecnicoBloc() : super(TecnicoInitial()) {
     on<InsertTecnicoEvent>(_onInsertTecnicoEvent);
     on<LoadTecnicosEvent>(_onLoadTecnicosEvent);

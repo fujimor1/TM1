@@ -155,13 +155,13 @@ class TecnicoModel {
     };
   }
 
-  // Map<String, dynamic> toJsonForPost() {
-  //   return {
-  //     'usuario_id': usuario.id,
-  //     'foto_perfil': fotoPerfil,
-  //     // You might want to include foto_perfil and descripcion here if they are part of the POST payload
-  //     // 'foto_perfil': fotoPerfil,
-  //     // 'descripcion': descripcion,
-  //   };
-  // }
+  Map<String, dynamic> toJsonForPost() {
+    return {
+      'usuario_id': usuario.id,
+      'foto_perfil': fotoPerfil,
+      // You might want to include foto_perfil and descripcion here if they are part of the POST payload
+      // 'foto_perfil': fotoPerfil,
+      // 'descripcion': descripcion,
+    };
+  }
 }

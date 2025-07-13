@@ -1,5 +1,5 @@
 import 'package:tm1/config/dio/dio_client.dart';
-import 'package:tm1/data/model/tecnico/tecnico_model.dart';
+// import 'package:tm1/data/model/tecnico/tecnico_model.dart';
 import 'package:tm1/data/model/tecnicocategoria/tecnicocategoria_model.dart';
 import 'package:tm1/domain/datasource/tecnicocategoria_datasource.dart';
 
